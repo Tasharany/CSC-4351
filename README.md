@@ -13,10 +13,13 @@ Make sure your directory looks like this:
      │   └── *.class (Compiled classes)
 
 If on linux, WSL or classes server:
+
 cd prog1
+
 make
 
 Expected output:
+
 cd Parse; java -cp /root/prog1/lib/classes:/root/prog1 JLex.Main Tiger.lex; mv Tiger.lex.java Yylex.java
 Processing first section -- user code.
 Processing second section -- JLex declarations.
@@ -32,7 +35,9 @@ javac -cp /root/prog1/lib/classes:/root/prog1 -g Parse/*.java
 
 
 make run
+
 Expected Output:
+
 INT_LITERAL 0   #1
 TIMES 1
 MINUS 2
