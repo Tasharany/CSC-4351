@@ -45,7 +45,6 @@ Yylex(java.io.InputStream s, ErrorMsg e) {
 %eofval}
 
 %%
-/* Keywords */
 <YYINITIAL> "var"      { return tok(sym.VAR); }
 <YYINITIAL> "function" { return tok(sym.FUNCTION); }
 <YYINITIAL> "break"    { return tok(sym.BREAK); }
@@ -64,7 +63,6 @@ Yylex(java.io.InputStream s, ErrorMsg e) {
 <YYINITIAL> "array"    { return tok(sym.ARRAY); }
 <YYINITIAL> "type"     { return tok(sym.TYPE); }
 
-/* Operators */
 <YYINITIAL> "+"        { return tok(sym.PLUS); }
 <YYINITIAL> "-"        { return tok(sym.MINUS); }
 <YYINITIAL> "*"        { return tok(sym.TIMES); }
@@ -79,7 +77,6 @@ Yylex(java.io.InputStream s, ErrorMsg e) {
 <YYINITIAL> "|"        { return tok(sym.OR); }
 <YYINITIAL> ":="       { return tok(sym.ASSIGN); }
 
-/* Punctuation */
 <YYINITIAL> "("        { return tok(sym.LPAREN); }
 <YYINITIAL> ")"        { return tok(sym.RPAREN); }
 <YYINITIAL> "["        { return tok(sym.LBRACK); }
@@ -90,29 +87,28 @@ Yylex(java.io.InputStream s, ErrorMsg e) {
 <YYINITIAL> ","        { return tok(sym.COMMA); }
 <YYINITIAL> ";"        { return tok(sym.SEMICOLON); }
 
-/* Numbers */
 <YYINITIAL> [0-9]+     { return tok(sym.INT_LITERAL, Integer.parseInt(yytext())); }
 <YYINITIAL> 0x[0-9a-fA-F]+ { return tok(sym.INT_LITERAL, Integer.decode(yytext())); }
 <YYINITIAL> 0[0-7]+    { return tok(sym.INT_LITERAL, Integer.parseInt(yytext(), 8)); }
 
-/* Strings */
+
 <YYINITIAL> \"         { yybegin(STRING); }
 <STRING> \"            { yybegin(YYINITIAL); return tok(sym.STRING_LITERAL, yytext()); }
 <STRING> [^\"\n\\]+    { }
 <STRING> \\n           { }
 <STRING> \\t           { }
-<STRING> \\[0-7]{3}    { }
+<STRING> \\[0-7]+      { }
 <STRING> \\\\          { }
 <STRING> \\\"|\\       { }
 <STRING> \n            { err("Unterminated string constant"); }
 
-/* Comments */
 <YYINITIAL> "/*"       { yybegin(COMMENT); }
 <COMMENT> "*/"         { yybegin(YYINITIAL); }
 <COMMENT> [^*\n]+      { }
 <COMMENT> "*"          { }
 <COMMENT> \n           { newline(); }
 
-/* Error catching */
+<YYINITIAL> [a-zA-Z_][a-zA-Z0-9_]* { return tok(sym.ID, yytext()); }
+<YYINITIAL> [ \t\n\r]+ { }
 . { err("Illegal character: " + yytext()); }
 
