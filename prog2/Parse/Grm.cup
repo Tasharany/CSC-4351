@@ -91,5 +91,3 @@ declaration ::=
   | ENUM:e ID:i LBRACE enumerator_list:el RBRACE
     {: RESULT = new EnumDeclaration(e, sym(i), el); :}
   ;
-
-/* Continue with the rest of your grammar productions... */
