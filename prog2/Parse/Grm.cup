@@ -1,0 +1,95 @@
+package Parse;
+
+action code {:
+    static Symbol.Symbol sym(String s) {
+        return Symbol.Symbol.symbol(s);
+    }
+:};
+
+parser code  {:
+    Lexer lexer;
+    ErrorMsg.ErrorMsg errorMsg;
+
+    public void syntax_error(java_cup.runtime.Symbol current) {
+        report_error("Syntax error (" + current.sym + ")", current);
+    }
+
+    public void report_error(String message, java_cup.runtime.Symbol info) {
+        errorMsg.error(info.left, message);
+    }
+
+    public Grm(Lexer l, ErrorMsg.ErrorMsg err) {
+        this();
+        errorMsg = err;
+        lexer = l;
+    }
+:};
+
+scan with {: return lexer.nextToken(); :};
+
+/* Terminals */
+terminal String ID, STRING_LITERAL;
+terminal Integer DECIMAL_LITERAL;
+terminal char CHAR_LITERAL;
+terminal INT, COMMA, COLON, SEMICOLON, LPAREN, RPAREN, LBRACK, RBRACK;
+terminal LBRACE, RBRACE, PLUS, MINUS, TIMES, DIVIDE, EQ, NEQ, LT, LE, GT, GE;
+terminal AND, OR, ASSIGN, IF, ELSE, WHILE, FOR, DO, BREAK, FUN, VAR;
+terminal VOLATILE, NOT, REGISTER, CONTINUE, TYPEDEF, STRUCT, STATIC, SIZEOF;
+terminal RETURN, EXTERN, DOUBLE, UNION, SHORT, FLOAT, CONST, VOID, LONG;
+terminal GOTO, ENUM, CHAR, AUTO, RSHIFTASSIGN, LSHIFTASSIGN, ELIPSES;
+terminal BWISEORASSIGN, BWISEXORASSIGN, RSHIFT, LSHIFT, DIVASSIGN, ARROW;
+terminal SUBASSIGN, DECREMENT, ADDASSIGN, INCREMENT, MULASSIGN;
+terminal BWISEANDASSIGN, MODASSIGN, TILDE, BWISEOR, BWISEXOR, PERIOD;
+terminal BITWISEAND, MODULUS;
+
+/* Non-terminals */
+non terminal Declaration          declaration;
+non terminal Name                name;
+non terminal BitfieldList        bitfield_list;
+non terminal BitfieldValue       bitfield_value;
+non terminal Type               type, type_name, type_augments;
+non terminal PointerList         pointer_list;
+non terminal BracketsList        brackets_list;
+non terminal EmptyArrayTypeList  empty_array_type_list;
+non terminal ExprArrayTypeList   expression_array_type_list;
+non terminal Initialization      initialization;
+non terminal StructDecl          struct_or_union_declarator;
+non terminal EnumList           enumerator_list;
+non terminal Enumerator         enumerator;
+non terminal StructDeclList     struct_declaration_list;
+non terminal Parameters         parameters, type_parameters;
+non terminal ParamList          parameter_list;
+non terminal ParamTypeList      parameter_type_list;
+non terminal InitList           initializer_list;
+non terminal Init               initializer;
+
+/* Precedence declarations would go here */
+precedence left OR;
+precedence left AND;
+precedence left BWISEOR;
+precedence left BWISEXOR;
+precedence left BITWISEAND;
+precedence left EQ, NEQ;
+precedence left LT, LE, GT, GE;
+precedence left LSHIFT, RSHIFT;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE, MODULUS;
+precedence right TILDE, NOT;
+
+/* Grammar productions */
+declaration ::=
+    VAR:v bitfield_list:b type:t name:n initialization:i SEMICOLON
+    {: RESULT = new VarDeclaration(v, b, t, n, i); :}
+  | FUN:f bitfield_list:b type:t name:n parameters:p compound_statement:cs
+    {: RESULT = new FunDeclaration(f, b, t, n, p, cs); :}
+  | FUN:f bitfield_list:b type:t name:n type_parameters:tp SEMICOLON
+    {: RESULT = new FunPrototype(f, b, t, n, tp); :}
+  | TYPEDEF:td type:t name:n SEMICOLON
+    {: RESULT = new TypedefDeclaration(td, t, n); :}
+  | bitfield_list:b struct_or_union:su name:n struct_or_union_declarator:d
+    {: RESULT = new StructUnionDeclaration(b, su, n, d); :}
+  | ENUM:e ID:i LBRACE enumerator_list:el RBRACE
+    {: RESULT = new EnumDeclaration(e, sym(i), el); :}
+  ;
+
+/* Continue with the rest of your grammar productions... */
