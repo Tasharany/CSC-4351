@@ -21,9 +21,16 @@ cd prog2
 
 make 
 
-make test 
-Expected Output: SeqExp(
-                        ExpList())
+make test
+
+Expected.output: 
+
+OpExp(
+PLUS,
+VarExp(
+SimpleVar(a)),
+VarExp(
+SimpleVar(b)))
 
 
 make clean
