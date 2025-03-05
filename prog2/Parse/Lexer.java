@@ -1,5 +1,8 @@
 package Parse;
+import java_cup.runtime.Symbol;
+import java.io.IOException;
 
-interface Lexer {
-    public java_cup.runtime.Symbol nextToken() throws java.io.IOException;
+public interface Lexer {
+    Symbol nextToken() throws IOException;
 }
+
