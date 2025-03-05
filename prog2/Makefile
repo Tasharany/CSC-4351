@@ -24,5 +24,5 @@ Parse/Yylex.java: Parse/Tiger.lex
 clean:
 	rm -f */*.class Parse/Grm.java Parse/Grm.err Parse/Grm.out Parse/Yylex.java
 # Run target to execute the program with test.c
-run: all
+test: all
 	java -cp $(CLASSPATH) Parse.Main $(TEST_FILE)

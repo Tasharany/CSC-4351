@@ -8,20 +8,20 @@ Make sure your directory looks like this:
      |   ├── Lexer.java
      |   ├── sym.java
      |   ├── Main.java
-     |   ├── sym.java
+     |   ├── Tiger.lex
+     |   ├── Parse.java
+     |   ├── Yylex.java (auto-generated)
+     |   ├── Grm.java (auto-generated)
+     |   ├── Grm.err (auto-generated)
+     |   ├── Grm.out (auto-generated)
+     |   ├── Grm.class (auto-generated)
 If on linux, WSL or classes server:
 
 cd prog2
 
-make
+make 
 
-Expected output:
-creation of Grm.err and Grm.out in /Parse
-
-
-[ERROR]
-make run
-
+make test 
 Expected Output: SeqExp(
                         ExpList())
 
@@ -29,16 +29,6 @@ Expected Output: SeqExp(
 make clean
 
 ________
-Need Yylex.classes 
-
-
-clean:
-
-cp Prase/Yylex.class ./.
-
-rm -f */*.class Parse/Grm.java Parse/Grm.err Parse/Grm.out
-
-mv Yylex.class ./Parse/
 
 
 
