@@ -24,7 +24,6 @@ public class Dec extends Absyn {
         type = t;
         name = n;
         extra = e;
-        hasVarArgs = false;
     }
 }
 
