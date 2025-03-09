@@ -1,1 +1,1 @@
-VAR x
+VAR

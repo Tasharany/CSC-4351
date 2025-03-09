@@ -1,46 +1,52 @@
 Opening files...
 Parsing specification from standard input...
 Error at 25(7): Syntax error
-Warning at 50(23): Unrecognized character '<'(60) -- ignored
-Warning at 50(35): Unrecognized character '>'(62) -- ignored
-Error at 50(55): Syntax error
-Warning at 52(23): Unrecognized character '<'(60) -- ignored
-Warning at 52(37): Unrecognized character '>'(62) -- ignored
-Error at 52(52): Syntax error
-Warning at 56(23): Unrecognized character '<'(60) -- ignored
-Warning at 56(33): Unrecognized character '>'(62) -- ignored
-Error at 56(50): Syntax error
-Warning at 57(23): Unrecognized character '<'(60) -- ignored
-Warning at 57(28): Unrecognized character '>'(62) -- ignored
-Error at 69(29): Start non terminal "declaration_list" has not been declared
+Error at 63(4): Syntax error
+Warning at 64(23): Unrecognized character '<'(60) -- ignored
+Warning at 64(35): Unrecognized character '>'(62) -- ignored
+Error at 64(55): Syntax error
+Warning at 66(23): Unrecognized character '<'(60) -- ignored
+Warning at 66(37): Unrecognized character '>'(62) -- ignored
+Error at 66(52): Syntax error
+Warning at 70(23): Unrecognized character '<'(60) -- ignored
+Warning at 70(33): Unrecognized character '>'(62) -- ignored
+Error at 70(50): Syntax error
+Warning at 71(23): Unrecognized character '<'(60) -- ignored
+Warning at 71(28): Unrecognized character '>'(62) -- ignored
 ===== Terminals =====
-DIVIDE SHORT STRING_LITERAL CONST CHAR 
-GE CHAR_LITERAL DOUBLE CONTINUE LPAREN 
-INT REGISTER FOR MINUS RPAREN 
-STATIC SEMICOLON NOT AND LT 
-FUN OR COMMA EXTERN TYPEDEF 
-PLUS IF ASSIGN ID LE 
-EOF RETURN error NEQ AUTO 
-BREAK VOID EQ LBRACK TIMES 
-COLON UNION ELSE LBRACE RBRACK 
-ENUM WHILE FLOAT RBRACE DECIMAL_LITERAL 
-LONG VOLATILE STRUCT GT VAR 
-DO 
+SHORT TIMES GT ARROW DIVASSIGN 
+CONST GE PERIOD REGISTER ENUM 
+RBRACK SIZEOF COMMA RBRACE RPAREN 
+LBRACK LT INCREMENT SUBASSIGN DOUBLE 
+BWISEANDASSIGN STRUCT LBRACE LPAREN MODASSIGN 
+NOT TILDE LE VAR BITWISEAND 
+FLOAT GOTO EQ LSHIFTASSIGN MODULUS 
+LONG PLUS DIVIDE WHILE UNION 
+ASSIGN CHAR ADDASSIGN DO FOR 
+VOID EXTERN RETURN ELSE BREAK 
+FUN INT STRING_LITERAL EOF SEMICOLON 
+MULASSIGN ELIPSES DECREMENT MINUS OR 
+error DECIMAL_LITERAL CONTINUE IF BWISEOR 
+ID COLON BWISEXOR BWISEORASSIGN RSHIFTASSIGN 
+VOLATILE CHAR_LITERAL RSHIFT BWISEXORASSIGN NEQ 
+AND STATIC LSHIFT TYPEDEF AUTO 
+
 
 ===== Non terminals =====
-name compound_statement $START declaration 
+Declaration var name compound_statement $START 
+exp 
 
 ===== Productions =====
 name ::= ID 
-declaration ::= FUN name LPAREN RPAREN compound_statement 
-$START ::= declaration EOF 
-declaration ::= VAR name SEMICOLON 
+exp ::= error 
+exp ::= VAR ID 
+$START ::= exp EOF 
 
 ===== Viable Prefix Recognizer =====
 Closing files...
 ------- CUP v0.10g Parser Generation Summary -------
   5 errors and 8 warnings
-  56 terminals, 4 non terminals, and 4 productions declared, 
+  80 terminals, 6 non terminals, and 4 productions declared, 
   producing 0 unique parse states.
   0 terminals declared but not used.
   0 non terminals declared but not used.
