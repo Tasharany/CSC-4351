@@ -47,7 +47,7 @@ terminal IF, ELSE, WHILE, DO, FOR, BREAK, CONTINUE, RETURN;
 
 /* Non terminals */
 non terminal Declaration            declaration;
-non terminal ArrayList<Declaration> declaration_list;
+non terminal ArrayList<Declaration> declaratitron_list;
 non terminal BitfieldValue         bitfield_value;
 non terminal ArrayList<BitfieldValue> bitfield_list;
 non terminal Type                  type;
@@ -77,7 +77,10 @@ declaration_list ::=
     {: dl.add(d);
        RESULT = dl; :}
   ;
-
+declaration ::=
+    VAR name:n SEMICOLON
+    {: RESULT = new VarDec(VARleft, null, n); :}
+  ;
 declaration ::=
     VAR bitfield_list:b type:t name:n SEMICOLON
     {: RESULT = new Declaration(VARleft, Declaration.VAR_DEC, b, t, n, null); :}

@@ -1,10 +1,9 @@
 Opening files...
 Parsing specification from standard input...
 Error at 25(7): Syntax error
-Error at 46(16): java_cup.runtime.Symbol "error" has already been declared
 Warning at 50(23): Unrecognized character '<'(60) -- ignored
 Warning at 50(35): Unrecognized character '>'(62) -- ignored
-Error at 50(53): Syntax error
+Error at 50(55): Syntax error
 Warning at 52(23): Unrecognized character '<'(60) -- ignored
 Warning at 52(37): Unrecognized character '>'(62) -- ignored
 Error at 52(52): Syntax error
@@ -40,7 +39,7 @@ declaration ::= VAR name SEMICOLON
 ===== Viable Prefix Recognizer =====
 Closing files...
 ------- CUP v0.10g Parser Generation Summary -------
-  6 errors and 8 warnings
+  5 errors and 8 warnings
   56 terminals, 4 non terminals, and 4 productions declared, 
   producing 0 unique parse states.
   0 terminals declared but not used.
