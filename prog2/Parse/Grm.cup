@@ -1,8 +1,8 @@
 package Parse;
-import java.util.ArrayList;
 import ErrorMsg.ErrorMsg;
 import Absyn.*;
-
+import java.util.ArrayList;
+/* Parser code section */
 parser code {:
     public ErrorMsg errorMsg;
     Lexer lexer;
@@ -44,69 +44,54 @@ terminal BWISEORASSIGN, BWISEXORASSIGN, RSHIFT, LSHIFT, DIVASSIGN, ARROW;
 terminal SUBASSIGN, DECREMENT, ADDASSIGN, INCREMENT, MULASSIGN;
 terminal BWISEANDASSIGN, MODASSIGN, TILDE, BWISEOR, BWISEXOR, PERIOD;
 terminal BITWISEAND, MODULUS;
+
+/* Non terminals with types */
+non terminal Absyn.Exp          Exp;
+non terminal Absyn.Var          Var;
+non terminal ArrayList          declaration_list;
+non terminal Absyn.Dec          declaration;
+non terminal ArrayList          bitfield_list;
+non terminal Absyn.BitfieldValue bitfield_value;
+non terminal Absyn.Ty           type;
+non terminal Absyn.Name         name;
+non terminal ArrayList          parameter_list;
+non terminal ArrayList          type_parameters;
+non terminal ArrayList          initializer_list;
+non terminal ArrayList          enumerator_list;
+non terminal ArrayList          struct_declaration_list;
+non terminal ArrayList          empty_array_type_list;
+non terminal ArrayList          expression_array_type_list;
+non terminal ArrayList          pointer_list;
+
 /* Precedence declarations */
-precedence left OR;
-precedence left AND;
-precedence left BWISEOR;
-precedence left BWISEXOR;
-precedence left BITWISEAND;
-precedence nonassoc EQ, NEQ;
-precedence nonassoc LT, LE, GT, GE;
-precedence left LSHIFT, RSHIFT;
 precedence left PLUS, MINUS;
-precedence left TIMES, DIVIDE, MODULUS;
-precedence right TILDE, NOT;
+precedence left TIMES, DIVIDE;
 
-
-
-/* Non terminals */
-non terminal Declaration            declaration;
-non terminal ArrayList<Declaration> declaratitron_list;
-non terminal BitfieldValue         bitfield_value;
-non terminal ArrayList<BitfieldValue> bitfield_list;
-non terminal Type                  type;
-non terminal Name                  name;
-non terminal CompoundStmt          compound_statement;
-non terminal ArrayList<Parameter>  parameter_list;
-non terminal ArrayList<Type>       type_parameters;
-non terminal Exp exp;
-non terminal Var var;
+/* Start with declaration_list */
+start with declaration_list;
 
 /* Grammar rules */
-start with exp;
-
-exp ::=
-    VAR ID:i
-    {: RESULT = new VarExp(VARleft, new SimpleVar(ileft, sym(i))); :}
-  | error
-    {: RESULT = new SeqExp(errorleft, null); :}
-  ;
-
 declaration_list ::=
     declaration:d
-    {: ArrayList<Declaration> list = new ArrayList<>();
+    {: ArrayList list = new ArrayList();
        list.add(d);
        RESULT = list; :}
   | declaration_list:dl declaration:d
     {: dl.add(d);
        RESULT = dl; :}
   ;
-declaration ::=
-    VAR name:n SEMICOLON
-    {: RESULT = new VarDec(VARleft, null, n); :}
-  ;
+
+
 declaration ::=
     VAR bitfield_list:b type:t name:n SEMICOLON
-    {: RESULT = new Declaration(VARleft, Declaration.VAR_DEC, b, t, n, null); :}
-  | FUN bitfield_list:b type:t name:n LPAREN parameter_list:p RPAREN compound_statement:c
-    {: RESULT = new Declaration(FUNleft, Declaration.FUN_DEC, b, t, n, new FunDec.Body(p, c)); :}
+    {: RESULT = new VarDec(VARleft, b, t, n, null); :}
   ;
 
 bitfield_list ::=
     /* empty */
-    {: RESULT = new ArrayList<>(); :}
-  | bitfield_value:b bitfield_list:bl
-    {: bl.add(0, b);
+    {: RESULT = new ArrayList(); :}
+  | bitfield_value:bv bitfield_list:bl
+    {: bl.add(0, bv);
        RESULT = bl; :}
   ;
 
@@ -120,28 +105,16 @@ bitfield_value ::=
   ;
 
 type ::=
-    VOID   {: RESULT = new Type(VOIDleft, Type.VOID); :}
+    INT    {: RESULT = new Type(INTleft, Type.INT); :}
+  | VOID   {: RESULT = new Type(VOIDleft, Type.VOID); :}
   | CHAR   {: RESULT = new Type(CHARleft, Type.CHAR); :}
   | SHORT  {: RESULT = new Type(SHORTleft, Type.SHORT); :}
-  | INT    {: RESULT = new Type(INTleft, Type.INT); :}
   | LONG   {: RESULT = new Type(LONGleft, Type.LONG); :}
   | FLOAT  {: RESULT = new Type(FLOATleft, Type.FLOAT); :}
   | DOUBLE {: RESULT = new Type(DOUBLEleft, Type.DOUBLE); :}
-  | ID:i   {: RESULT = new Type(ileft, Type.NAMED, sym(i)); :}
   ;
 
 name ::=
-    ID:i {: RESULT = new Name(ileft, sym(i)); :}
-  ;
-
-parameter_list ::=
-    /* empty */
-    {: RESULT = new ArrayList<>(); :}
-  | type:t name:n
-    {: ArrayList<Parameter> list = new ArrayList<>();
-       list.add(new Parameter(tleft, t, n));
-       RESULT = list; :}
-  | parameter_list:pl COMMA type:t name:n
-    {: pl.add(new Parameter(tleft, t, n));
-       RESULT = pl; :}
+    ID:i
+    {: RESULT = new Name(ileft, sym(i)); :}
   ;

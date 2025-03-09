@@ -19,19 +19,15 @@ If on linux, WSL or classes server:
 
 cd prog2
 
-make 
+make all
+
+Parse/Grm.java
 
 make test
 
-Expected.output: 
-
-OpExp(
-PLUS,
-VarExp(
-SimpleVar(a)),
-VarExp(
-SimpleVar(b)))
-
+Expected.output:
+SeqExp(
+ ExpList())
 
 make clean
 
