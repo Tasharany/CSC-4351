@@ -1,40 +1,79 @@
 Opening files...
 Parsing specification from standard input...
-Error at 25(7): Syntax error
+Error at 26(7): Syntax error
 ===== Terminals =====
-SHORT TIMES GT ARROW DIVASSIGN 
-CONST GE PERIOD REGISTER ENUM 
-RBRACK SIZEOF COMMA RBRACE RPAREN 
-LBRACK LT INCREMENT SUBASSIGN DOUBLE 
-BWISEANDASSIGN STRUCT LBRACE LPAREN MODASSIGN 
-NOT TILDE LE VAR BITWISEAND 
-FLOAT GOTO EQ LSHIFTASSIGN MODULUS 
-LONG PLUS DIVIDE WHILE UNION 
-ASSIGN CHAR ADDASSIGN DO FOR 
-VOID EXTERN RETURN ELSE BREAK 
-FUN INT STRING_LITERAL EOF SEMICOLON 
-MULASSIGN ELIPSES DECREMENT MINUS OR 
-error DECIMAL_LITERAL CONTINUE IF BWISEOR 
-ID COLON BWISEXOR BWISEORASSIGN RSHIFTASSIGN 
-VOLATILE CHAR_LITERAL RSHIFT BWISEXORASSIGN NEQ 
-AND STATIC LSHIFT TYPEDEF AUTO 
+DIVIDE SHORT STRING_LITERAL CONST CHAR 
+GE CHAR_LITERAL DOUBLE CONTINUE LPAREN 
+INT REGISTER ELIPSES FOR MINUS 
+RPAREN STATIC SEMICOLON NOT AND 
+LT FUN OR COMMA BEGIN 
+EXTERN TYPEDEF PLUS IF ASSIGN 
+ID LE EOF RETURN error 
+NEQ AUTO BREAK VOID EQ 
+LBRACK TIMES COLON UNION ELSE 
+LBRACE RBRACK ENUM WHILE FLOAT 
+THEN RBRACE DECIMAL_LITERAL END LONG 
+VOLATILE STRUCT GT VAR DO 
 
 
 ===== Non terminals =====
-name pointer_list declaration Exp struct_declaration_list 
-expression_array_type_list declaration_list type_parameters bitfield_value type 
-empty_array_type_list enumerator_list $START bitfield_list initializer_list 
-parameter_list Var 
+declaration enumerator_list type parameters exp 
+$START initialization type_parameters declaration_list bitfield_value 
+parameter_list struct_declaration_list struct_or_union enumerator initializer 
+type_name bitfield_list name 
 
 ===== Productions =====
+enumerator_list ::= error RBRACE 
+struct_declaration_list ::= error SEMICOLON 
+exp ::= error RPAREN 
+declaration ::= error SEMICOLON 
+exp ::= MINUS exp 
+exp ::= LPAREN exp RPAREN 
+exp ::= NOT exp 
+exp ::= exp OR exp 
+exp ::= exp AND exp 
+exp ::= exp GE exp 
+exp ::= exp GT exp 
+exp ::= exp LE exp 
+exp ::= exp LT exp 
+exp ::= exp NEQ exp 
+exp ::= exp EQ exp 
+exp ::= exp DIVIDE exp 
+exp ::= exp TIMES exp 
+exp ::= exp MINUS exp 
+exp ::= exp PLUS exp 
+exp ::= DECIMAL_LITERAL 
+exp ::= ID 
+initializer ::= LBRACE RBRACE 
+initializer ::= 
+type_parameters ::= LPAREN RPAREN 
+type_parameters ::= LPAREN COMMA ELIPSES RPAREN 
+type_parameters ::= LPAREN RPAREN 
+enumerator ::= ID ASSIGN 
+enumerator ::= ID 
+enumerator_list ::= enumerator_list COMMA enumerator 
+enumerator_list ::= enumerator 
+struct_declaration_list ::= struct_declaration_list type name SEMICOLON 
+struct_declaration_list ::= type name SEMICOLON 
+struct_or_union ::= UNION 
+struct_or_union ::= STRUCT 
+parameter_list ::= parameter_list COMMA type name 
+parameter_list ::= type name 
+parameters ::= LPAREN RPAREN 
+parameters ::= LPAREN parameter_list COMMA ELIPSES RPAREN 
+parameters ::= LPAREN parameter_list RPAREN 
+initialization ::= ASSIGN initializer 
+initialization ::= 
 name ::= ID 
-type ::= DOUBLE 
-type ::= FLOAT 
-type ::= LONG 
-type ::= SHORT 
-type ::= CHAR 
-type ::= VOID 
-type ::= INT 
+type_name ::= ID 
+type_name ::= DOUBLE 
+type_name ::= FLOAT 
+type_name ::= LONG 
+type_name ::= INT 
+type_name ::= SHORT 
+type_name ::= CHAR 
+type_name ::= VOID 
+type ::= type_name 
 bitfield_value ::= REGISTER 
 bitfield_value ::= AUTO 
 bitfield_value ::= STATIC 
@@ -43,7 +82,13 @@ bitfield_value ::= VOLATILE
 bitfield_value ::= CONST 
 bitfield_list ::= bitfield_value bitfield_list 
 bitfield_list ::= 
-declaration ::= VAR bitfield_list type name SEMICOLON 
+declaration ::= ENUM ID LBRACE enumerator_list RBRACE 
+declaration ::= bitfield_list struct_or_union name LBRACE struct_declaration_list RBRACE 
+declaration ::= TYPEDEF type name SEMICOLON 
+declaration ::= FUN bitfield_list type name type_parameters SEMICOLON 
+declaration ::= FUN bitfield_list type name parameters 
+declaration ::= VAR bitfield_list type name initialization SEMICOLON 
+declaration_list ::= error SEMICOLON 
 declaration_list ::= declaration_list declaration 
 declaration_list ::= declaration 
 $START ::= declaration_list EOF 
@@ -52,11 +97,11 @@ $START ::= declaration_list EOF
 Closing files...
 ------- CUP v0.10g Parser Generation Summary -------
   1 error and 0 warnings
-  80 terminals, 17 non terminals, and 20 productions declared, 
+  60 terminals, 18 non terminals, and 69 productions declared, 
   producing 0 unique parse states.
   0 terminals declared but not used.
   0 non terminals declared but not used.
   0 productions never reduced.
-  0 conflicts detected (7 expected).
+  0 conflicts detected (3 expected).
   No code produced.
 ---------------------------------------------------- (v0.10g)

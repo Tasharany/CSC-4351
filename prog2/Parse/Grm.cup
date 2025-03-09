@@ -3,12 +3,13 @@ import ErrorMsg.ErrorMsg;
 import Absyn.*;
 import java.util.ArrayList;
 
+/* Parser code */
 parser code {:
     public ErrorMsg errorMsg;
     Lexer lexer;
 
     public void syntax_error(java_cup.runtime.Symbol current) {
-        report_error("Syntax error (" + current.sym + ")", current);
+        report_error("Syntax error", current);
     }
 
     public void report_error(String message, java_cup.runtime.Symbol info) {
@@ -33,41 +34,50 @@ scan with {: return lexer.nextToken(); :};
 /* Terminals */
 terminal String ID, STRING_LITERAL;
 terminal Integer DECIMAL_LITERAL;
-terminal char CHAR_LITERAL;
-terminal INT, COMMA, COLON, SEMICOLON, LPAREN, RPAREN, LBRACK, RBRACK;
-terminal LBRACE, RBRACE, PLUS, MINUS, TIMES, DIVIDE, EQ, NEQ, LT, LE, GT, GE;
-terminal AND, OR, ASSIGN, IF, ELSE, WHILE, FOR, DO, BREAK, FUN, VAR;
-terminal VOLATILE, NOT, REGISTER, CONTINUE, TYPEDEF, STRUCT, STATIC, SIZEOF;
-terminal RETURN, EXTERN, DOUBLE, UNION, SHORT, FLOAT, CONST, VOID, LONG;
-terminal GOTO, ENUM, CHAR, AUTO, RSHIFTASSIGN, LSHIFTASSIGN, ELIPSES;
-terminal BWISEORASSIGN, BWISEXORASSIGN, RSHIFT, LSHIFT, DIVASSIGN, ARROW;
-terminal SUBASSIGN, DECREMENT, ADDASSIGN, INCREMENT, MULASSIGN;
-terminal BWISEANDASSIGN, MODASSIGN, TILDE, BWISEOR, BWISEXOR, PERIOD;
-terminal BITWISEAND, MODULUS;
+terminal Character CHAR_LITERAL;
+terminal VAR, FUN, TYPEDEF, STRUCT, UNION, ENUM;
+terminal CONST, VOLATILE, EXTERN, STATIC, AUTO, REGISTER;
+terminal VOID, CHAR, SHORT, INT, LONG, FLOAT, DOUBLE;
+terminal PLUS, MINUS, TIMES, DIVIDE;
+terminal EQ, NEQ, LT, LE, GT, GE;
+terminal AND, OR, NOT;
+terminal LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
+terminal COMMA, COLON, SEMICOLON, ASSIGN;
+terminal IF, THEN, ELSE, WHILE, DO, FOR, BEGIN, END;
+terminal BREAK, CONTINUE, RETURN;
+terminal ELIPSES;
 
-/* Non terminals with types */
-non terminal Absyn.Exp          Exp;
-non terminal Absyn.Var          Var;
-non terminal ArrayList          declaration_list;
-non terminal Absyn.Dec          declaration;
-non terminal ArrayList          bitfield_list;
-non terminal Absyn.FieldVar bitfield_value;
-non terminal Absyn.Ty           type;
-non terminal Absyn.NameTy         name;
-non terminal ArrayList          parameter_list;
-non terminal ArrayList          type_parameters;
-non terminal ArrayList          initializer_list;
-non terminal ArrayList          enumerator_list;
-non terminal ArrayList          struct_declaration_list;
-non terminal ArrayList          empty_array_type_list;
-non terminal ArrayList          expression_array_type_list;
-non terminal ArrayList          pointer_list;
+/* Non terminals */
+non terminal Exp exp;
+non terminal ArrayList declaration_list;
+non terminal Declaration declaration;
+non terminal ArrayList bitfield_list;
+non terminal BitfieldValue bitfield_value;
+non terminal Type type;
+non terminal TypeName type_name;
+non terminal Name name;
+non terminal ArrayList parameter_list;
+non terminal Parameters parameters;
+non terminal TypeParameters type_parameters;
+non terminal Initialization initialization;
+non terminal Initializer initializer;
+non terminal ArrayList struct_declaration_list;
+non terminal StructOrUnion struct_or_union;
+non terminal ArrayList enumerator_list;
+non terminal Enumerator enumerator;
 
 /* Precedence declarations */
+precedence nonassoc THEN;
+precedence nonassoc ELSE;
+precedence left OR;
+precedence left AND;
+precedence nonassoc EQ, NEQ;
+precedence nonassoc LT, LE, GT, GE;
 precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE;
+precedence right NOT;
 
-/* Start with declaration_list */
+/* Start symbol */
 start with declaration_list;
 
 /* Grammar rules */
@@ -79,12 +89,23 @@ declaration_list ::=
   | declaration_list:dl declaration:d
     {: dl.add(d);
        RESULT = dl; :}
+  | error SEMICOLON
+    {: RESULT = new ArrayList(); :}
   ;
 
-
 declaration ::=
-    VAR bitfield_list:b type:t name:n SEMICOLON
-    {: RESULT = new VarDec(VARleft, b, t, n, null); :}
+    VAR bitfield_list:b type:t name:n initialization:i SEMICOLON
+    {: RESULT = new VarDec(VARleft, b, t, n, i); :}
+  | FUN bitfield_list:b type:t name:n parameters:p
+    {: RESULT = new FunDec(FUNleft, b, t, n, p); :}
+  | FUN bitfield_list:b type:t name:n type_parameters:tp SEMICOLON
+    {: RESULT = new FunProto(FUNleft, b, t, n, tp); :}
+  | TYPEDEF type:t name:n SEMICOLON
+    {: RESULT = new TypeDef(TYPEDEFleft, t, n); :}
+  | bitfield_list:b struct_or_union:su name:n LBRACE struct_declaration_list:sl RBRACE
+    {: RESULT = new StructUnionDec(bleft, b, su, n, sl); :}
+  | ENUM ID:i LBRACE enumerator_list:el RBRACE
+    {: RESULT = new EnumDec(ENUMleft, sym(i), el); :}
   ;
 
 bitfield_list ::=
@@ -105,16 +126,184 @@ bitfield_value ::=
   ;
 
 type ::=
-    INT    {: RESULT = new Type(INTleft, Type.INT); :}
-  | VOID   {: RESULT = new Type(VOIDleft, Type.VOID); :}
-  | CHAR   {: RESULT = new Type(CHARleft, Type.CHAR); :}
-  | SHORT  {: RESULT = new Type(SHORTleft, Type.SHORT); :}
-  | LONG   {: RESULT = new Type(LONGleft, Type.LONG); :}
-  | FLOAT  {: RESULT = new Type(FLOATleft, Type.FLOAT); :}
-  | DOUBLE {: RESULT = new Type(DOUBLEleft, Type.DOUBLE); :}
+    type_name:tn
+    {: RESULT = new Type(tnleft, tn); :}
+  ;
+
+type_name ::=
+    VOID   {: RESULT = new TypeName(VOIDleft, TypeName.VOID); :}
+  | CHAR   {: RESULT = new TypeName(CHARleft, TypeName.CHAR); :}
+  | SHORT  {: RESULT = new TypeName(SHORTleft, TypeName.SHORT); :}
+  | INT    {: RESULT = new TypeName(INTleft, TypeName.INT); :}
+  | LONG   {: RESULT = new TypeName(LONGleft, TypeName.LONG); :}
+  | FLOAT  {: RESULT = new TypeName(FLOATleft, TypeName.FLOAT); :}
+  | DOUBLE {: RESULT = new TypeName(DOUBLEleft, TypeName.DOUBLE); :}
+  | ID:i   {: RESULT = new TypeName(ileft, TypeName.NAMED, sym(i)); :}
   ;
 
 name ::=
     ID:i
     {: RESULT = new Name(ileft, sym(i)); :}
+  ;
+
+initialization ::=
+    /* empty */
+    {: RESULT = null; :}
+  | ASSIGN initializer:i
+    {: RESULT = new Initialization(ASSIGNleft, i); :}
+  ;
+
+parameters ::=
+    LPAREN parameter_list:pl RPAREN
+    {: RESULT = new Parameters(LPARENleft, pl); :}
+  | LPAREN parameter_list:pl COMMA ELIPSES RPAREN
+    {: RESULT = new Parameters(LPARENleft, pl, true); :}
+  | LPAREN RPAREN
+    {: RESULT = new Parameters(LPARENleft, new ArrayList()); :}
+  ;
+
+parameter_list ::=
+    type:t name:n
+    {: ArrayList list = new ArrayList();
+       list.add(new Parameter(tleft, t, n));
+       RESULT = list; :}
+  | parameter_list:pl COMMA type:t name:n
+    {: pl.add(new Parameter(tleft, t, n));
+       RESULT = pl; :}
+  ;
+struct_or_union ::=
+    STRUCT  {: RESULT = new StructOrUnion(STRUCTleft, StructOrUnion.STRUCT); :}
+  | UNION   {: RESULT = new StructOrUnion(UNIONleft, StructOrUnion.UNION); :}
+  ;
+
+struct_declaration_list ::=
+    type:t name:n SEMICOLON
+    {: ArrayList list = new ArrayList();
+       list.add(new StructField(tleft, t, n));
+       RESULT = list; :}
+  | struct_declaration_list:sl type:t name:n SEMICOLON
+    {: sl.add(new StructField(tleft, t, n));
+       RESULT = sl; :}
+  ;
+
+enumerator_list ::=
+    enumerator:e
+    {: ArrayList list = new ArrayList();
+       list.add(e);
+       RESULT = list; :}
+  | enumerator_list:el COMMA enumerator:e
+    {: el.add(e);
+       RESULT = el; :}
+  ;
+
+enumerator ::=
+    ID:i
+    {: RESULT = new Enumerator(ileft, sym(i), null); :}
+  | ID:i ASSIGN constant_expression:e
+    {: RESULT = new Enumerator(ileft, sym(i), e); :}
+  ;
+
+type_parameters ::=
+    LPAREN parameter_type_list:pl RPAREN
+    {: RESULT = new TypeParameters(LPARENleft, pl); :}
+  | LPAREN parameter_type_list:pl COMMA ELIPSES RPAREN
+    {: RESULT = new TypeParameters(LPARENleft, pl, true); :}
+  | LPAREN RPAREN
+    {: RESULT = new TypeParameters(LPARENleft, new ArrayList()); :}
+  ;
+
+parameter_type_list ::=
+    type:t
+    {: ArrayList list = new ArrayList();
+       list.add(t);
+       RESULT = list; :}
+  | parameter_type_list:pl COMMA type:t
+    {: pl.add(t);
+       RESULT = pl; :}
+  ;
+
+initializer ::=
+    assignment_expression:e
+    {: RESULT = new Initializer(eleft, e); :}
+  | LBRACE initializer_list:l RBRACE
+    {: RESULT = new InitializerList(LBRACEleft, l); :}
+  ;
+
+initializer_list ::=
+    initializer:i
+    {: ArrayList list = new ArrayList();
+       list.add(i);
+       RESULT = list; :}
+  | initializer_list:l COMMA initializer:i
+    {: l.add(i);
+       RESULT = l; :}
+  ;
+
+constant_expression ::=
+    exp:e
+    {: RESULT = e; :}
+  ;
+
+assignment_expression ::=
+    exp:e
+    {: RESULT = e; :}
+  ;
+
+exp ::=
+    ID:i
+    {: RESULT = new VarExp(ileft, new SimpleVar(ileft, sym(i))); :}
+  | DECIMAL_LITERAL:n
+    {: RESULT = new IntExp(nleft, n); :}
+  | exp:l PLUS exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.PLUS, r); :}
+  | exp:l MINUS exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.MINUS, r); :}
+  | exp:l TIMES exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.TIMES, r); :}
+  | exp:l DIVIDE exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.DIVIDE, r); :}
+  | exp:l EQ exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.EQ, r); :}
+  | exp:l NEQ exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.NEQ, r); :}
+  | exp:l LT exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.LT, r); :}
+  | exp:l LE exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.LE, r); :}
+  | exp:l GT exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.GT, r); :}
+  | exp:l GE exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.GE, r); :}
+  | exp:l AND exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.AND, r); :}
+  | exp:l OR exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.OR, r); :}
+  | NOT exp:e
+    {: RESULT = new OpExp(eleft, e, OpExp.NOT, null); :}
+  | LPAREN exp:e RPAREN
+    {: RESULT = e; :}
+  | MINUS exp:e
+    {: RESULT = new OpExp(eleft, new IntExp(eleft, 0), OpExp.MINUS, e); :}
+    %prec NOT
+  ;
+
+/* Error recovery productions */
+declaration ::=
+    error SEMICOLON
+    {: parser.report_error("Invalid declaration - skipping to next semicolon", null); :}
+  ;
+
+exp ::=
+    error RPAREN
+    {: parser.report_error("Invalid expression - skipping to closing parenthesis", null); :}
+  ;
+
+struct_declaration_list ::=
+    error SEMICOLON
+    {: parser.report_error("Invalid struct field - skipping to next semicolon", null); :}
+  ;
+
+enumerator_list ::=
+    error RBRACE
+    {: parser.report_error("Invalid enumerator - skipping to end of enum", null); :}
   ;
