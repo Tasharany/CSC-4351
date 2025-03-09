@@ -23,7 +23,7 @@ Parse/Yylex.java: Parse/Tiger.lex
 # Clean target to remove all generated files
 clean:
 
-	rm -f Parse/*.class Parse/Grm.java Parse/Grm.err Parse/Grm.out Parse/sym.java
+	rm -f Parse/*.class Parse/Yylex.java Parse/Grm.java Parse/Grm.err Parse/Grm.out Parse/sym.java
 # Run target to execute the program with test.c
 test: all
 	java -cp $(CLASSPATH) Parse.Main $(TEST_FILE)
