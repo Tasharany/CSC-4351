@@ -1,60 +1,128 @@
 package Parse;
+import java.util.ArrayList;
+import ErrorMsg.ErrorMsg;
+import Absyn.*;
 
-action code {: static Symbol.Symbol sym(String s) {
-	         return Symbol.Symbol.symbol(s);
-	        }
-	    :};
+parser code {:
+    public ErrorMsg errorMsg;
 
-parser code  {: 
-  Lexer lexer;
+    public void syntax_error(java_cup.runtime.Symbol current) {
+        errorMsg.error(current.left, "Syntax error");
+    }
 
-  public void syntax_error(java_cup.runtime.Symbol current) {
-   report_error("Syntax error (" + current.sym + ")", current);
-  }
+    public Grm(Lexer l, ErrorMsg e) {
+        this();
+        lexer = l;
+        errorMsg = e;
+    }
+:};
 
-  ErrorMsg.ErrorMsg errorMsg;
-
-  public void report_error(String message, java_cup.runtime.Symbol info) {
-      errorMsg.error(info.left, message);
-  }
-
-  public Grm(Lexer l, ErrorMsg.ErrorMsg err) {
-    this();
-    errorMsg=err;
-    lexer=l;
-  }
+action code {:
+    static Symbol.Symbol sym(String s) {
+        return Symbol.Symbol.symbol(s);
+    }
 :};
 
 scan with {: return lexer.nextToken(); :};
 
-terminal String ID, STRING_LITERAL;
+/* Terminals */
+terminal String ID;
 terminal Integer DECIMAL_LITERAL;
-terminal char CHAR_LITERAL;
-terminal INT, COMMA, COLON, SEMICOLON, LPAREN, RPAREN, LBRACK, RBRACK,
+terminal SEMICOLON, COMMA, COLON;
+terminal LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
+terminal PLUS, MINUS, TIMES, DIVIDE, UMINUS;
+terminal AND, OR, EQ, NEQ, LT, LE, GT, GE;
+terminal ASSIGN;
+terminal VAR, FUN, TYPEDEF, STRUCT, UNION, ENUM;
+terminal CONST, VOLATILE, EXTERN, STATIC, AUTO, REGISTER;
+terminal VOID, CHAR, SHORT, INT, LONG, FLOAT, DOUBLE;
+terminal ELIPSES;
 
-	LBRACE, RBRACE, PLUS, MINUS, TIMES, DIVIDE, EQ, NEQ, LT, LE,
-	GT, GE, AND, OR, ASSIGN, IF, ELSE, WHILE, FOR,
-	DO, BREAK, FUN, VAR, VOLATILE,
-    REGISTER, CONTINUE, TYPEDEF,
-    STRUCT, STATIC, SIZEOF, RETURN, EXTERN, DOUBLE,
-    UNION, SHORT, FLOAT, CONST, VOID, LONG, GOTO, ENUM,
-    CHAR, AUTO, RSHIFTASSIGN, LSHIFTASSIGN, ELIPSES, BWISEORASSIGN,
-    BWISEXORASSIGN, RSHIFT, LSHIFT, DIVASSIGN, ARROW, SUBASSIGN, DECREMENT,
-    ADDASSIGN, INCREMENT, MULASSIGN, BWISEANDASSIGN, MODASSIGN, TILDE,
-    BWISEOR, BWISEXOR, PERIOD, BITWISEAND,
-    MODULUS;
+/* Non-terminals */
+non terminal Declaration declaration;
+non terminal ArrayList<Declaration> declaration_list;
+non terminal ArrayList<BitfieldValue> bitfield_list;
+non terminal BitfieldValue bitfield_value;
+non terminal Type type;
+non terminal TypeName type_name;
+non terminal Exp exp, ae, be;  // arithmetic and boolean expressions
+non terminal ArrayList<Parameter> parameter_list;
+non terminal ArrayList<Type> type_parameters;
+non terminal Name name;
 
-non terminal Absyn.Exp          Exp;
-non terminal Absyn.Var          Var;
+/* Precedence declarations */
+precedence left OR;
+precedence left AND;
+precedence left EQ, NEQ;
+precedence left LT, LE, GT, GE;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+precedence left UMINUS;
 
-start with Exp;
+/* Start with declarations */
+start with declaration_list;
 
-Exp ::= error:e
-	  {: RESULT = new Absyn.SeqExp(eleft, null); :}
-	| Var:v
-	  {: RESULT = new Absyn.VarExp(vleft, v); :}
-	;
+/* Grammar Rules */
+declaration_list ::=
+    declaration:d
+    {: ArrayList<Declaration> list = new ArrayList<>();
+       list.add(d);
+       RESULT = list; :}
+  | declaration_list:dl declaration:d
+    {: dl.add(d);
+       RESULT = dl; :}
+  ;
 
-Var ::=   ID:n
-	  {: RESULT = new Absyn.SimpleVar(nleft, sym(n)); :}
-	;
+declaration ::=
+    VAR bitfield_list:b type:t name:n ASSIGN exp:e SEMICOLON
+    {: RESULT = new VarDec(VARleft, b, t, n, e); :}
+  | FUN bitfield_list:b type:t name:n parameter_list:p LBRACE exp:e RBRACE
+    {: RESULT = new FunDec(FUNleft, b, t, n, p, e); :}
+  ;
+
+exp ::=
+    ae:a
+    {: RESULT = a; :}
+  | be:b
+    {: RESULT = b; :}
+  ;
+
+ae ::=
+    ae:a PLUS ae:b
+    {: RESULT = new OpExp(aleft, a, OpExp.PLUS, b); :}
+  | ae:a MINUS ae:b
+    {: RESULT = new OpExp(aleft, a, OpExp.MINUS, b); :}
+  | ae:a TIMES ae:b
+    {: RESULT = new OpExp(aleft, a, OpExp.TIMES, b); :}
+  | ae:a DIVIDE ae:b
+    {: RESULT = new OpExp(aleft, a, OpExp.DIVIDE, b); :}
+  | MINUS ae:a                                    %prec UMINUS
+    {: RESULT = new OpExp(MINUSleft, a, OpExp.UMINUS, null); :}
+  | LPAREN ae:a RPAREN
+    {: RESULT = a; :}
+  | ID:i
+    {: RESULT = new IdExp(ileft, sym(i)); :}
+  | DECIMAL_LITERAL:n
+    {: RESULT = new IntExp(nleft, n); :}
+  ;
+
+be ::=
+    be:a AND be:b
+    {: RESULT = new OpExp(aleft, a, OpExp.AND, b); :}
+  | be:a OR be:b
+    {: RESULT = new OpExp(aleft, a, OpExp.OR, b); :}
+  | ae:a EQ ae:b
+    {: RESULT = new OpExp(aleft, a, OpExp.EQ, b); :}
+  | ae:a NEQ ae:b
+    {: RESULT = new OpExp(aleft, a, OpExp.NEQ, b); :}
+  | ae:a LT ae:b
+    {: RESULT = new OpExp(aleft, a, OpExp.LT, b); :}
+  | ae:a LE ae:b
+    {: RESULT = new OpExp(aleft, a, OpExp.LE, b); :}
+  | ae:a GT ae:b
+    {: RESULT = new OpExp(aleft, a, OpExp.GT, b); :}
+  | ae:a GE ae:b
+    {: RESULT = new OpExp(aleft, a, OpExp.GE, b); :}
+  | LPAREN be:a RPAREN
+    {: RESULT = a; :}
+  ;
