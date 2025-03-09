@@ -27,7 +27,7 @@ make test
 
 Expected.output:
 SeqExp(
- ExpList())
+ ExpList(VAR))
 
 make clean
 

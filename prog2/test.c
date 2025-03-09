@@ -1,1 +1,1 @@
-VAR int x;
+VAR
