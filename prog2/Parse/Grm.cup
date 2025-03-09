@@ -26,17 +26,30 @@ action code {:
 scan with {: return lexer.nextToken(); :};
 
 /* Terminals */
-terminal String ID;
+terminal String ID, STRING_LITERAL;
 terminal Integer DECIMAL_LITERAL;
-terminal SEMICOLON, COMMA, COLON;
-terminal LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
-terminal PLUS, MINUS, TIMES, DIVIDE, UMINUS;
-terminal AND, OR, EQ, NEQ, LT, LE, GT, GE;
-terminal ASSIGN;
-terminal VAR, FUN, TYPEDEF, STRUCT, UNION, ENUM;
-terminal CONST, VOLATILE, EXTERN, STATIC, AUTO, REGISTER;
-terminal VOID, CHAR, SHORT, INT, LONG, FLOAT, DOUBLE;
-terminal ELIPSES;
+terminal Character CHAR_LITERAL;
+terminal Integer NUMBER;
+terminal SHORT, TIMES, GT, ARROW, DIVASSIGN;
+terminal CONST, GE, PERIOD, REGISTER, ENUM;
+terminal RBRACK, SIZEOF, COMMA, RBRACE, RPAREN;
+terminal LBRACK, LT, INCREMENT, SUBASSIGN, DOUBLE;
+terminal BWISEANDASSIGN, STRUCT, LBRACE, LPAREN, MODASSIGN;
+terminal TILDE, LE, VAR, BITWISEAND, FLOAT;
+terminal GOTO, EQ, LSHIFTASSIGN, MODULUS, LONG;
+terminal PLUS, DIVIDE, WHILE, UNION, ASSIGN;
+terminal CHAR, ADDASSIGN, DO, FOR, VOID;
+terminal EXTERN, RETURN, ELSE, BREAK, FUN;
+terminal INT, SEMICOLON, ELIPSES;
+terminal MULASSIGN, DECREMENT, MINUS, OR;
+terminal CONTINUE, IF, BWISEOR;
+terminal COLON, BWISEXOR, BWISEORASSIGN, RSHIFTASSIGN, VOLATILE;
+terminal RSHIFT, BWISEXORASSIGN, NEQ, AND;
+terminal STATIC, LSHIFT, TYPEDEF, AUTO;
+terminal EOF;
+terminal error;
+
+
 
 /* Non-terminals */
 non terminal Declaration declaration;
@@ -49,6 +62,7 @@ non terminal Exp exp, ae, be;  // arithmetic and boolean expressions
 non terminal ArrayList<Parameter> parameter_list;
 non terminal ArrayList<Type> type_parameters;
 non terminal Name name;
+non terminal Var;
 
 /* Precedence declarations */
 precedence left OR;
@@ -125,4 +139,20 @@ be ::=
     {: RESULT = new OpExp(aleft, a, OpExp.GE, b); :}
   | LPAREN be:a RPAREN
     {: RESULT = a; :}
-  ;
+
+  /* Start symbol */
+  start with Exp;
+
+  /* Grammar rules */
+  Exp ::=
+      error:e
+      {: RESULT = new SeqExp(eleft, null); :}
+    | Var:v
+      {: RESULT = new VarExp(vleft, v); :}
+    ;
+
+  Var ::=
+      ID:i
+      {: RESULT = new SimpleVar(ileft, sym(i)); :}
+    ;
+
