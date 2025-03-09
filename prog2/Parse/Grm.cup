@@ -2,7 +2,7 @@ package Parse;
 import ErrorMsg.ErrorMsg;
 import Absyn.*;
 import java.util.ArrayList;
-/* Parser code section */
+
 parser code {:
     public ErrorMsg errorMsg;
     Lexer lexer;
@@ -51,9 +51,9 @@ non terminal Absyn.Var          Var;
 non terminal ArrayList          declaration_list;
 non terminal Absyn.Dec          declaration;
 non terminal ArrayList          bitfield_list;
-non terminal Absyn.BitfieldValue bitfield_value;
+non terminal Absyn.FieldVar bitfield_value;
 non terminal Absyn.Ty           type;
-non terminal Absyn.Name         name;
+non terminal Absyn.NameTy         name;
 non terminal ArrayList          parameter_list;
 non terminal ArrayList          type_parameters;
 non terminal ArrayList          initializer_list;

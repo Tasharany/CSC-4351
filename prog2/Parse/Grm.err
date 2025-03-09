@@ -1,13 +1,6 @@
 Opening files...
 Parsing specification from standard input...
 Error at 25(7): Syntax error
-Warning at 49(23): Unrecognized character '<'(60) -- ignored
-Warning at 49(35): Unrecognized character '>'(62) -- ignored
-Error at 49(53): Syntax error
-Warning at 51(23): Unrecognized character '<'(60) -- ignored
-Warning at 51(37): Unrecognized character '>'(62) -- ignored
-Error at 51(52): Syntax error
-Error at 61(29): Start non terminal "declaration_list" has not been declared
 ===== Terminals =====
 SHORT TIMES GT ARROW DIVASSIGN 
 CONST GE PERIOD REGISTER ENUM 
@@ -28,8 +21,10 @@ AND STATIC LSHIFT TYPEDEF AUTO
 
 
 ===== Non terminals =====
-name Exp type $START Var 
-
+name pointer_list declaration Exp struct_declaration_list 
+expression_array_type_list declaration_list type_parameters bitfield_value type 
+empty_array_type_list enumerator_list $START bitfield_list initializer_list 
+parameter_list Var 
 
 ===== Productions =====
 name ::= ID 
@@ -39,14 +34,25 @@ type ::= LONG
 type ::= SHORT 
 type ::= CHAR 
 type ::= VOID 
-$START ::= type EOF 
 type ::= INT 
+bitfield_value ::= REGISTER 
+bitfield_value ::= AUTO 
+bitfield_value ::= STATIC 
+bitfield_value ::= EXTERN 
+bitfield_value ::= VOLATILE 
+bitfield_value ::= CONST 
+bitfield_list ::= bitfield_value bitfield_list 
+bitfield_list ::= 
+declaration ::= VAR bitfield_list type name SEMICOLON 
+declaration_list ::= declaration_list declaration 
+declaration_list ::= declaration 
+$START ::= declaration_list EOF 
 
 ===== Viable Prefix Recognizer =====
 Closing files...
 ------- CUP v0.10g Parser Generation Summary -------
-  4 errors and 4 warnings
-  80 terminals, 5 non terminals, and 9 productions declared, 
+  1 error and 0 warnings
+  80 terminals, 17 non terminals, and 20 productions declared, 
   producing 0 unique parse states.
   0 terminals declared but not used.
   0 non terminals declared but not used.
