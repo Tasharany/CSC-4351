@@ -5,15 +5,20 @@ import Absyn.*;
 
 parser code {:
     public ErrorMsg errorMsg;
+    Lexer lexer;
 
     public void syntax_error(java_cup.runtime.Symbol current) {
-        errorMsg.error(current.left, "Syntax error");
+        report_error("Syntax error (" + current.sym + ")", current);
+    }
+
+    public void report_error(String message, java_cup.runtime.Symbol info) {
+        errorMsg.error(info.left, message);
     }
 
     public Grm(Lexer l, ErrorMsg e) {
         this();
-        lexer = l;
         errorMsg = e;
+        lexer = l;
     }
 :};
 
@@ -29,54 +34,40 @@ scan with {: return lexer.nextToken(); :};
 terminal String ID, STRING_LITERAL;
 terminal Integer DECIMAL_LITERAL;
 terminal Character CHAR_LITERAL;
-terminal Integer NUMBER;
-terminal SHORT, TIMES, GT, ARROW, DIVASSIGN;
-terminal CONST, GE, PERIOD, REGISTER, ENUM;
-terminal RBRACK, SIZEOF, COMMA, RBRACE, RPAREN;
-terminal LBRACK, LT, INCREMENT, SUBASSIGN, DOUBLE;
-terminal BWISEANDASSIGN, STRUCT, LBRACE, LPAREN, MODASSIGN;
-terminal TILDE, LE, VAR, BITWISEAND, FLOAT;
-terminal GOTO, EQ, LSHIFTASSIGN, MODULUS, LONG;
-terminal PLUS, DIVIDE, WHILE, UNION, ASSIGN;
-terminal CHAR, ADDASSIGN, DO, FOR, VOID;
-terminal EXTERN, RETURN, ELSE, BREAK, FUN;
-terminal INT, SEMICOLON, ELIPSES;
-terminal MULASSIGN, DECREMENT, MINUS, OR;
-terminal CONTINUE, IF, BWISEOR;
-terminal COLON, BWISEXOR, BWISEORASSIGN, RSHIFTASSIGN, VOLATILE;
-terminal RSHIFT, BWISEXORASSIGN, NEQ, AND;
-terminal STATIC, LSHIFT, TYPEDEF, AUTO;
-terminal EOF;
-terminal error;
+terminal VAR, FUN, TYPEDEF, STRUCT, UNION, ENUM;
+terminal CONST, VOLATILE, EXTERN, STATIC, AUTO, REGISTER;
+terminal VOID, CHAR, SHORT, INT, LONG, FLOAT, DOUBLE;
+terminal PLUS, MINUS, TIMES, DIVIDE;
+terminal EQ, NEQ, LT, LE, GT, GE;
+terminal AND, OR, NOT;
+terminal LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
+terminal SEMICOLON, COMMA, ASSIGN, COLON;
+terminal IF, ELSE, WHILE, DO, FOR, BREAK, CONTINUE, RETURN;
 
 
-
-/* Non-terminals */
-non terminal Declaration declaration;
+/* Non terminals */
+non terminal Declaration            declaration;
 non terminal ArrayList<Declaration> declaration_list;
+non terminal BitfieldValue         bitfield_value;
 non terminal ArrayList<BitfieldValue> bitfield_list;
-non terminal BitfieldValue bitfield_value;
-non terminal Type type;
-non terminal TypeName type_name;
-non terminal Exp exp, ae, be;  // arithmetic and boolean expressions
-non terminal ArrayList<Parameter> parameter_list;
-non terminal ArrayList<Type> type_parameters;
-non terminal Name name;
-non terminal Var;
+non terminal Type                  type;
+non terminal Name                  name;
+non terminal CompoundStmt          compound_statement;
+non terminal ArrayList<Parameter>  parameter_list;
+non terminal ArrayList<Type>       type_parameters;
 
 /* Precedence declarations */
-precedence left OR;
-precedence left AND;
+precedence nonassoc ELSE;
+precedence nonassoc ASSIGN;
 precedence left EQ, NEQ;
 precedence left LT, LE, GT, GE;
 precedence left PLUS, MINUS;
 precedence left TIMES, DIVIDE;
-precedence left UMINUS;
+precedence right NOT;
 
-/* Start with declarations */
+/* Grammar rules */
 start with declaration_list;
 
-/* Grammar Rules */
 declaration_list ::=
     declaration:d
     {: ArrayList<Declaration> list = new ArrayList<>();
@@ -88,71 +79,52 @@ declaration_list ::=
   ;
 
 declaration ::=
-    VAR bitfield_list:b type:t name:n ASSIGN exp:e SEMICOLON
-    {: RESULT = new VarDec(VARleft, b, t, n, e); :}
-  | FUN bitfield_list:b type:t name:n parameter_list:p LBRACE exp:e RBRACE
-    {: RESULT = new FunDec(FUNleft, b, t, n, p, e); :}
+    VAR bitfield_list:b type:t name:n SEMICOLON
+    {: RESULT = new Declaration(VARleft, Declaration.VAR_DEC, b, t, n, null); :}
+  | FUN bitfield_list:b type:t name:n LPAREN parameter_list:p RPAREN compound_statement:c
+    {: RESULT = new Declaration(FUNleft, Declaration.FUN_DEC, b, t, n, new FunDec.Body(p, c)); :}
   ;
 
-exp ::=
-    ae:a
-    {: RESULT = a; :}
-  | be:b
-    {: RESULT = b; :}
+bitfield_list ::=
+    /* empty */
+    {: RESULT = new ArrayList<>(); :}
+  | bitfield_value:b bitfield_list:bl
+    {: bl.add(0, b);
+       RESULT = bl; :}
   ;
 
-ae ::=
-    ae:a PLUS ae:b
-    {: RESULT = new OpExp(aleft, a, OpExp.PLUS, b); :}
-  | ae:a MINUS ae:b
-    {: RESULT = new OpExp(aleft, a, OpExp.MINUS, b); :}
-  | ae:a TIMES ae:b
-    {: RESULT = new OpExp(aleft, a, OpExp.TIMES, b); :}
-  | ae:a DIVIDE ae:b
-    {: RESULT = new OpExp(aleft, a, OpExp.DIVIDE, b); :}
-  | MINUS ae:a                                    %prec UMINUS
-    {: RESULT = new OpExp(MINUSleft, a, OpExp.UMINUS, null); :}
-  | LPAREN ae:a RPAREN
-    {: RESULT = a; :}
-  | ID:i
-    {: RESULT = new IdExp(ileft, sym(i)); :}
-  | DECIMAL_LITERAL:n
-    {: RESULT = new IntExp(nleft, n); :}
+bitfield_value ::=
+    CONST    {: RESULT = new BitfieldValue(CONSTleft, BitfieldValue.CONST); :}
+  | VOLATILE {: RESULT = new BitfieldValue(VOLATILEleft, BitfieldValue.VOLATILE); :}
+  | EXTERN   {: RESULT = new BitfieldValue(EXTERNleft, BitfieldValue.EXTERN); :}
+  | STATIC   {: RESULT = new BitfieldValue(STATICleft, BitfieldValue.STATIC); :}
+  | AUTO     {: RESULT = new BitfieldValue(AUTOleft, BitfieldValue.AUTO); :}
+  | REGISTER {: RESULT = new BitfieldValue(REGISTERleft, BitfieldValue.REGISTER); :}
   ;
 
-be ::=
-    be:a AND be:b
-    {: RESULT = new OpExp(aleft, a, OpExp.AND, b); :}
-  | be:a OR be:b
-    {: RESULT = new OpExp(aleft, a, OpExp.OR, b); :}
-  | ae:a EQ ae:b
-    {: RESULT = new OpExp(aleft, a, OpExp.EQ, b); :}
-  | ae:a NEQ ae:b
-    {: RESULT = new OpExp(aleft, a, OpExp.NEQ, b); :}
-  | ae:a LT ae:b
-    {: RESULT = new OpExp(aleft, a, OpExp.LT, b); :}
-  | ae:a LE ae:b
-    {: RESULT = new OpExp(aleft, a, OpExp.LE, b); :}
-  | ae:a GT ae:b
-    {: RESULT = new OpExp(aleft, a, OpExp.GT, b); :}
-  | ae:a GE ae:b
-    {: RESULT = new OpExp(aleft, a, OpExp.GE, b); :}
-  | LPAREN be:a RPAREN
-    {: RESULT = a; :}
+type ::=
+    VOID   {: RESULT = new Type(VOIDleft, Type.VOID); :}
+  | CHAR   {: RESULT = new Type(CHARleft, Type.CHAR); :}
+  | SHORT  {: RESULT = new Type(SHORTleft, Type.SHORT); :}
+  | INT    {: RESULT = new Type(INTleft, Type.INT); :}
+  | LONG   {: RESULT = new Type(LONGleft, Type.LONG); :}
+  | FLOAT  {: RESULT = new Type(FLOATleft, Type.FLOAT); :}
+  | DOUBLE {: RESULT = new Type(DOUBLEleft, Type.DOUBLE); :}
+  | ID:i   {: RESULT = new Type(ileft, Type.NAMED, sym(i)); :}
+  ;
 
-  /* Start symbol */
-  start with Exp;
+name ::=
+    ID:i {: RESULT = new Name(ileft, sym(i)); :}
+  ;
 
-  /* Grammar rules */
-  Exp ::=
-      error:e
-      {: RESULT = new SeqExp(eleft, null); :}
-    | Var:v
-      {: RESULT = new VarExp(vleft, v); :}
-    ;
-
-  Var ::=
-      ID:i
-      {: RESULT = new SimpleVar(ileft, sym(i)); :}
-    ;
-
+parameter_list ::=
+    /* empty */
+    {: RESULT = new ArrayList<>(); :}
+  | type:t name:n
+    {: ArrayList<Parameter> list = new ArrayList<>();
+       list.add(new Parameter(tleft, t, n));
+       RESULT = list; :}
+  | parameter_list:pl COMMA type:t name:n
+    {: pl.add(new Parameter(tleft, t, n));
+       RESULT = pl; :}
+  ;
