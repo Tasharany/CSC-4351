@@ -1,1 +1,1 @@
-VAR int
+VAR

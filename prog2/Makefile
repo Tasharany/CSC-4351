@@ -4,7 +4,7 @@ JFLAGS = -g
 # Source and test files
 TEST_FILE = test.c
 
-# Setting up CLASSPATH - Fix path issues
+# CLASSPATH
 CLASSPATH = $(shell pwd)/lib/classes:$(shell pwd)
 
 # Rule to compile all Java files

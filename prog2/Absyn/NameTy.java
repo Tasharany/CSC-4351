@@ -1,8 +1,8 @@
 package Absyn;
 import Symbol.Symbol;
+
 public class NameTy extends Ty {
-   public Symbol name;
-   public NameTy(int p, Symbol n) {pos=p; name=n;}
+   public Symbol.Symbol name;
    public static final int VOID = 0;
    public static final int CHAR = 1;
    public static final int SHORT = 2;
@@ -13,13 +13,9 @@ public class NameTy extends Ty {
    public static final int ENUM = 7;
    public static final int NAMED = 8;
 
-   public int type;
-   public Name id; // for ENUM and NAMED types
-
-   public NameTy(int p, int t, Name i) {
+   public NameTy(int p, Symbol.Symbol n) {
       super(p);
-      type = t;
-      id = i;
+      name = n;
    }
-
 }
+
