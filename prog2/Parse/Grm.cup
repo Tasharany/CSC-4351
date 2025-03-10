@@ -1,4 +1,5 @@
 package Parse;
+import java.util.ArrayList;
 
 action code {: static Symbol.Symbol sym(String s) {
 	         return Symbol.Symbol.symbol(s);
@@ -121,4 +122,15 @@ Var ::=   ID:n
 	  {: RESULT = new Absyn.SimpleVar(nleft, sym(n)); :}
 	;
 
+bitfield_list ::=
+ | bitfield_value bitfield_list
+ ;
 
+bitfield_value ::=
+    CONST    {: RESULT = new BitfieldValue(CONSTleft, BitfieldValue.CONST); :}
+  | VOLATILE {: RESULT = new BitfieldValue(VOLATILEleft, BitfieldValue.VOLATILE); :}
+  | EXTERN   {: RESULT = new BitfieldValue(EXTERNleft, BitfieldValue.EXTERN); :}
+  | STATIC   {: RESULT = new BitfieldValue(STATICleft, BitfieldValue.STATIC); :}
+  | AUTO     {: RESULT = new BitfieldValue(AUTOleft, BitfieldValue.AUTO); :}
+  | REGISTER {: RESULT = new BitfieldValue(REGISTERleft, BitfieldValue.REGISTER); :}
+  ;
