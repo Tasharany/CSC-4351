@@ -126,3 +126,6 @@ bitfield_list ::=
  | bitfield_value bitfield_list
  ;
 
+initialization          ::=
+                        | ASSIGN initializer
+                        ;
