@@ -71,6 +71,26 @@ terminal ELIPSES;
 
 non terminal Absyn.Exp          Exp;
 non terminal Absyn.Var          Var;
+non terminal Absyn.Type         type;
+non terminal Absyn.Name         name;
+non terminal Absyn.Parameters   parameters;
+non terminal Absyn.Initialization initialization;
+non terminal Absyn.Initializer  initializer;
+non terminal Absyn.BitfieldValue bitfield_value;
+non terminal Absyn.Declaration  declaration;
+non terminal ArrayList parameter_list;
+non terminal ArrayList          declaration_list;
+non terminal ArrayList          type_parameters;
+non terminal ArrayList          bitfield_list;
+non terminal ArrayList          struct_declaration_list;
+non terminal Absyn.StructOrUnion struct_or_union;
+non terminal ArrayList          enumerator_list;
+non terminal Absyn.Enumerator   enumerator;
+non terminal Absyn.CompoundStmt compound_statement;
+non terminal ArrayList          statement_list;
+non terminal Absyn.Statement    statement;
+non terminal ArrayList          argument_list;
+non terminal Absyn.Expression   constant_expression;
 
 start with Exp;
 
@@ -83,3 +103,5 @@ Exp ::= error:e
 Var ::=   ID:n
 	  {: RESULT = new Absyn.SimpleVar(nleft, sym(n)); :}
 	;
+
+
