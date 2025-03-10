@@ -6,6 +6,8 @@ TEST_FILE = test.c
 
 # CLASSPATH
 CLASSPATH = $(shell pwd)/lib/classes:$(shell pwd)
+# Targets
+all: Parse/*.class
 
 # Rule to compile all Java files
 Parse/*.class: Parse/*.java  Parse/Grm.java

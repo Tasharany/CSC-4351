@@ -1,376 +1,60 @@
 package Parse;
-import ErrorMsg.ErrorMsg;
-import Absyn.*;
-import java.util.ArrayList;
 
-/* Parser code */
-parser code {:
-    public ErrorMsg errorMsg;
-    Lexer lexer;
+action code {: static Symbol.Symbol sym(String s) {
+	         return Symbol.Symbol.symbol(s);
+	        }
+	    :};
 
-    public void syntax_error(java_cup.runtime.Symbol current) {
-        report_error("Syntax error", current);
-    }
+parser code  {: 
+  Lexer lexer;
 
-    public void report_error(String message, java_cup.runtime.Symbol info) {
-        errorMsg.error(info.left, message);
-    }
+  public void syntax_error(java_cup.runtime.Symbol current) {
+   report_error("Syntax error (" + current.sym + ")", current);
+  }
 
-    public Grm(Lexer l, ErrorMsg e) {
-        this();
-        errorMsg = e;
-        lexer = l;
-    }
-:};
+  ErrorMsg.ErrorMsg errorMsg;
 
-action code {:
-    static Symbol.Symbol sym(String s) {
-        return Symbol.Symbol.symbol(s);
-    }
+  public void report_error(String message, java_cup.runtime.Symbol info) {
+      errorMsg.error(info.left, message);
+  }
+
+  public Grm(Lexer l, ErrorMsg.ErrorMsg err) {
+    this();
+    errorMsg=err;
+    lexer=l;
+  }
 :};
 
 scan with {: return lexer.nextToken(); :};
 
-/* Terminals */
 terminal String ID, STRING_LITERAL;
 terminal Integer DECIMAL_LITERAL;
-terminal Character CHAR_LITERAL;
+terminal char CHAR_LITERAL;
+terminal INT, COMMA, COLON, SEMICOLON, LPAREN, RPAREN, LBRACK, RBRACK,
 
-/* Keywords */
-terminal VAR, FUN, TYPEDEF;
-terminal CONST, VOLATILE, EXTERN, STATIC, AUTO, REGISTER;
-terminal VOID, CHAR, SHORT, INT, LONG, FLOAT, DOUBLE;
-terminal STRUCT, UNION, ENUM;
-terminal IF, ELSE, WHILE, FOR, DO;
-terminal BREAK, CONTINUE, RETURN, GOTO;
-terminal SIZEOF;
+	LBRACE, RBRACE, PLUS, MINUS, TIMES, DIVIDE, EQ, NEQ, LT, LE,
+	GT, GE, AND, OR, ASSIGN, IF, ELSE, WHILE, FOR,
+	DO, BREAK, FUN, VAR, VOLATILE,
+    REGISTER, CONTINUE, TYPEDEF,
+    STRUCT, STATIC, SIZEOF, RETURN, EXTERN, DOUBLE,
+    UNION, SHORT, FLOAT, CONST, VOID, LONG, GOTO, ENUM,
+    CHAR, AUTO, RSHIFTASSIGN, LSHIFTASSIGN, ELIPSES, BWISEORASSIGN,
+    BWISEXORASSIGN, RSHIFT, LSHIFT, DIVASSIGN, ARROW, SUBASSIGN, DECREMENT,
+    ADDASSIGN, INCREMENT, MULASSIGN, BWISEANDASSIGN, MODASSIGN, TILDE,
+    BWISEOR, BWISEXOR, PERIOD, BITWISEAND,
+    MODULUS;
 
-/* Operators */
-terminal PLUS, MINUS, TIMES, DIVIDE;
-terminal EQ, NEQ, LT, LE, GT, GE;
-terminal AND, OR, NOT;
-terminal ASSIGN;
-terminal MODULUS;
-terminal TILDE;
-terminal BWISEOR, BWISEXOR, BITWISEAND;
+non terminal Absyn.Exp          Exp;
+non terminal Absyn.Var          Var;
 
-/* Compound Assignment Operators */
-terminal ADDASSIGN, SUBASSIGN, MULASSIGN, DIVASSIGN, MODASSIGN;
-terminal BWISEANDASSIGN, BWISEORASSIGN, BWISEXORASSIGN;
-terminal LSHIFTASSIGN, RSHIFTASSIGN;
+start with Exp;
 
-/* Shift Operators */
-terminal LSHIFT, RSHIFT;
+Exp ::= error:e
+	  {: RESULT = new Absyn.SeqExp(eleft, null); :}
+	| Var:v
+	  {: RESULT = new Absyn.VarExp(vleft, v); :}
+	;
 
-/* Increment/Decrement */
-terminal INCREMENT, DECREMENT;
-
-/* Punctuation */
-terminal COMMA, COLON, SEMICOLON;
-terminal LPAREN, RPAREN;
-terminal LBRACK, RBRACK;
-terminal LBRACE, RBRACE;
-terminal PERIOD, ARROW;
-terminal ELIPSES;
-
-
-/* Non terminals */
-non terminal Absyn.Exp          exp;
-non terminal Absyn.Var          var;
-non terminal ArrayList          declaration_list;
-non terminal Absyn.Declaration  declaration;
-non terminal ArrayList          bitfield_list;
-non terminal Absyn.BitfieldValue bitfield_value;
-non terminal Absyn.Type         type;
-non terminal Absyn.Name         name;
-non terminal ArrayList          parameter_list;
-non terminal ArrayList          type_parameters;
-non terminal Absyn.Parameters   parameters;
-non terminal Absyn.Initialization initialization;
-non terminal Absyn.Initializer  initializer;
-non terminal ArrayList          struct_declaration_list;
-non terminal Absyn.StructOrUnion struct_or_union;
-non terminal ArrayList          enumerator_list;
-non terminal Absyn.Enumerator   enumerator;
-non terminal Absyn.CompoundStmt compound_statement;
-non terminal ArrayList          statement_list;
-non terminal Absyn.Statement    statement;
-non terminal Absyn.Var          lvalue;
-non terminal ArrayList          argument_list;
-non terminal Absyn.Expression   constant_expression;
-
-/* Precedence declarations */
-precedence nonassoc ELSE;
-precedence right ASSIGN, ADDASSIGN, SUBASSIGN, MULASSIGN, DIVASSIGN, MODASSIGN;
-precedence right BWISEANDASSIGN, BWISEORASSIGN, BWISEXORASSIGN, LSHIFTASSIGN, RSHIFTASSIGN;
-precedence left OR;
-precedence left AND;
-precedence left BWISEOR;
-precedence left BWISEXOR;
-precedence left BITWISEAND;
-precedence left EQ, NEQ;
-precedence left LT, LE, GT, GE;
-precedence left LSHIFT, RSHIFT;
-precedence left PLUS, MINUS;
-precedence left TIMES, DIVIDE, MODULUS;
-precedence right NOT, TILDE;
-precedence right INCREMENT, DECREMENT;
-precedence left PERIOD, ARROW, LBRACK;
-
-/* Start symbol */
-start with declaration_list;
-
-/* Grammar rules */
-declaration_list ::=
-    declaration:d
-    {: ArrayList list = new ArrayList();
-       list.add(d);
-       RESULT = list; :}
-  | declaration_list:dl declaration:d
-    {: dl.add(d);
-       RESULT = dl; :}
-  ;
-
-declaration ::=
-    VAR bitfield_list:b type:t name:n initialization:i SEMICOLON
-    {: RESULT = new VarDec(VARleft, b, t, n, i); :}
-  | FUN bitfield_list:b type:t name:n parameters:p compound_statement:cs
-    {: RESULT = new FunDec(FUNleft, b, t, n, p, cs); :}
-  | TYPEDEF type:t name:n SEMICOLON
-    {: RESULT = new TypeDef(TYPEDEFleft, t, n); :}
-  | struct_or_union:su name:n LBRACE struct_declaration_list:sl RBRACE
-    {: RESULT = new StructUnionDec(suleft, null, su, n, sl); :}
-  | ENUM ID:i LBRACE enumerator_list:el RBRACE
-    {: RESULT = new EnumDec(ENUMleft, sym(i), el); :}
-  ;
-
-bitfield_list ::=
-    /* empty */
-    {: RESULT = new ArrayList(); :}
-  | bitfield_value:bv bitfield_list:bl
-    {: bl.add(0, bv);
-       RESULT = bl; :}
-  ;
-
-bitfield_value ::=
-    CONST    {: RESULT = new BitfieldValue(CONSTleft, BitfieldValue.CONST); :}
-  | VOLATILE {: RESULT = new BitfieldValue(VOLATILEleft, BitfieldValue.VOLATILE); :}
-  | EXTERN   {: RESULT = new BitfieldValue(EXTERNleft, BitfieldValue.EXTERN); :}
-  | STATIC   {: RESULT = new BitfieldValue(STATICleft, BitfieldValue.STATIC); :}
-  | AUTO     {: RESULT = new BitfieldValue(AUTOleft, BitfieldValue.AUTO); :}
-  | REGISTER {: RESULT = new BitfieldValue(REGISTERleft, BitfieldValue.REGISTER); :}
-  ;
-
-type ::=
-    VOID   {: RESULT = new Type(VOIDleft, Type.VOID); :}
-  | CHAR   {: RESULT = new Type(CHARleft, Type.CHAR); :}
-  | SHORT  {: RESULT = new Type(SHORTleft, Type.SHORT); :}
-  | INT    {: RESULT = new Type(INTleft, Type.INT); :}
-  | LONG   {: RESULT = new Type(LONGleft, Type.LONG); :}
-  | FLOAT  {: RESULT = new Type(FLOATleft, Type.FLOAT); :}
-  | DOUBLE {: RESULT = new Type(DOUBLEleft, Type.DOUBLE); :}
-  | ID:i   {: RESULT = new Type(ileft, Type.NAMED, sym(i)); :}
-  ;
-
-name ::=
-    ID:i
-    {: RESULT = new Name(ileft, sym(i)); :}
-  ;
-
-initialization ::=
-    /* empty */
-    {: RESULT = null; :}
-  | ASSIGN initializer:i
-    {: RESULT = new Initialization(ASSIGNleft, i); :}
-  ;
-
-initializer ::=
-    exp:e
-    {: RESULT = new Initializer(eleft, e); :}
-  | LBRACE initializer_list:l RBRACE
-    {: RESULT = new InitializerList(LBRACEleft, l); :}
-  ;
-
-exp ::=
-    /* Literal and identifier */
-    ID:i
-    {: RESULT = new VarExp(ileft, new SimpleVar(ileft, sym(i))); :}
-  | DECIMAL_LITERAL:n
-    {: RESULT = new IntExp(nleft, n.intValue()); :}
-  | STRING_LITERAL:s
-    {: RESULT = new StringExp(sleft, s); :}
-  | CHAR_LITERAL:c
-    {: RESULT = new CharExp(cleft, c); :}
-
-    /* Arithmetic operators */
-  | exp:l PLUS exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.PLUS, r); :}
-  | exp:l MINUS exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.MINUS, r); :}
-  | exp:l TIMES exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.TIMES, r); :}
-  | exp:l DIVIDE exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.DIVIDE, r); :}
-  | exp:l MODULUS exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.MOD, r); :}
-  | MINUS exp:e
-    {: RESULT = new OpExp(eleft, new IntExp(eleft, 0), OpExp.MINUS, e); :}
-    %prec NOT
-
-    /* Comparison operators */
-  | exp:l EQ exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.EQ, r); :}
-  | exp:l NEQ exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.NEQ, r); :}
-  | exp:l LT exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.LT, r); :}
-  | exp:l LE exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.LE, r); :}
-  | exp:l GT exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.GT, r); :}
-  | exp:l GE exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.GE, r); :}
-
-    /* Logical operators */
-  | exp:l AND exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.AND, r); :}
-  | exp:l OR exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.OR, r); :}
-  | NOT exp:e
-    {: RESULT = new OpExp(eleft, e, OpExp.NOT, null); :}
-
-    /* Bitwise operators */
-  | exp:l BITWISEAND exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.BITAND, r); :}
-  | exp:l BWISEOR exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.BITOR, r); :}
-  | exp:l BWISEXOR exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.BITXOR, r); :}
-  | TILDE exp:e
-    {: RESULT = new OpExp(eleft, e, OpExp.BITNOT, null); :}
-  | exp:l LSHIFT exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.LSHIFT, r); :}
-  | exp:l RSHIFT exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.RSHIFT, r); :}
-
-    /* Assignment */
-  | lvalue:l ASSIGN exp:r
-    {: RESULT = new AssignExp(lleft, l, r); :}
-  | lvalue:l ADDASSIGN exp:r
-    {: RESULT = new OpAssignExp(lleft, l, OpAssignExp.PLUS, r); :}
-  | lvalue:l SUBASSIGN exp:r
-    {: RESULT = new OpAssignExp(lleft, l, OpAssignExp.MINUS, r); :}
-  | lvalue:l MULASSIGN exp:r
-    {: RESULT = new OpAssignExp(lleft, l, OpAssignExp.TIMES, r); :}
-  | lvalue:l DIVASSIGN exp:r
-    {: RESULT = new OpAssignExp(lleft, l, OpAssignExp.DIVIDE, r); :}
-  | lvalue:l MODASSIGN exp:r
-    {: RESULT = new OpAssignExp(lleft, l, OpAssignExp.MOD, r); :}
-  | lvalue:l BWISEANDASSIGN exp:r
-    {: RESULT = new OpAssignExp(lleft, l, OpAssignExp.BITAND, r); :}
-  | lvalue:l BWISEORASSIGN exp:r
-    {: RESULT = new OpAssignExp(lleft, l, OpAssignExp.BITOR, r); :}
-  | lvalue:l BWISEXORASSIGN exp:r
-    {: RESULT = new OpAssignExp(lleft, l, OpAssignExp.BITXOR, r); :}
-  | lvalue:l LSHIFTASSIGN exp:r
-    {: RESULT = new OpAssignExp(lleft, l, OpAssignExp.LSHIFT, r); :}
-  | lvalue:l RSHIFTASSIGN exp:r
-    {: RESULT = new OpAssignExp(lleft, l, OpAssignExp.RSHIFT, r); :}
-
-    /* Increment/Decrement */
-  | INCREMENT lvalue:l
-    {: RESULT = new PreIncrExp(lleft, l); :}
-  | DECREMENT lvalue:l
-    {: RESULT = new PreDecrExp(lleft, l); :}
-  | lvalue:l INCREMENT
-    {: RESULT = new PostIncrExp(lleft, l); :}
-  | lvalue:l DECREMENT
-    {: RESULT = new PostDecrExp(lleft, l); :}
-
-    /* Structure and Array access */
-  | exp:e PERIOD ID:i
-    {: RESULT = new FieldExp(eleft, e, sym(i)); :}
-  | exp:e ARROW ID:i
-    {: RESULT = new PtrFieldExp(eleft, e, sym(i)); :}
-  | exp:a LBRACK exp:i RBRACK
-    {: RESULT = new SubscriptExp(aleft, a, i); :}
-
-    /* Function call */
-  | exp:f LPAREN argument_list:a RPAREN
-    {: RESULT = new CallExp(fleft, f, a); :}
-
-    /* Parentheses */
-  | LPAREN exp:e RPAREN
-    {: RESULT = e; :}
-  ;
-
-lvalue ::=
-    ID:i
-    {: RESULT = new SimpleVar(ileft, sym(i)); :}
-  | exp:e PERIOD ID:i
-    {: RESULT = new FieldVar(eleft, e, sym(i)); :}
-  | exp:e ARROW ID:i
-    {: RESULT = new PtrFieldVar(eleft, e, sym(i)); :}
-  | exp:a LBRACK exp:i RBRACK
-    {: RESULT = new SubscriptVar(aleft, a, i); :}
-  ;
-
-parameters ::=
-    LPAREN parameter_list:pl RPAREN
-    {: RESULT = new Parameters(LPARENleft, pl); :}
-  | LPAREN parameter_list:pl COMMA ELIPSES RPAREN
-    {: RESULT = new Parameters(LPARENleft, pl, true); :}
-  | LPAREN RPAREN
-    {: RESULT = new Parameters(LPARENleft, new ArrayList()); :}
-  ;
-
-parameter_list ::=
-    type:t name:n
-    {: ArrayList list = new ArrayList();
-       list.add(new Parameter(tleft, t, n));
-       RESULT = list; :}
-  | parameter_list:pl COMMA type:t name:n
-    {: pl.add(new Parameter(tleft, t, n));
-       RESULT = pl; :}
-  ;
-
-struct_or_union ::=
-    STRUCT {: RESULT = new StructOrUnion(STRUCTleft, StructOrUnion.STRUCT); :}
-  | UNION  {: RESULT = new StructOrUnion(UNIONleft, StructOrUnion.UNION); :}
-  ;
-
-struct_declaration_list ::=
-    type:t name:n SEMICOLON
-    {: ArrayList list = new ArrayList();
-       list.add(new StructField(tleft, t, n));
-       RESULT = list; :}
-  | struct_declaration_list:sl type:t name:n SEMICOLON
-    {: sl.add(new StructField(tleft, t, n));
-       RESULT = sl; :}
-  ;
-
-enumerator_list ::=
-    enumerator:e
-    {: ArrayList list = new ArrayList();
-       list.add(e);
-       RESULT = list; :}
-  | enumerator_list:el COMMA enumerator:e
-    {: el.add(e);
-       RESULT = el; :}
-  ;
-
-enumerator ::=
-    ID:i
-    {: RESULT = new Enumerator(ileft, sym(i), null); :}
-  | ID:i ASSIGN constant_expression:e
-    {: RESULT = new Enumerator(ileft, sym(i), e); :}
-  ;
-
-argument_list ::=
-    /* empty */
-    {: RESULT = null; :}
-  | exp:e
-    {: RESULT = new ExpList(e, null); :}
-  | argument_list:l COMMA exp:e
-    {: RESULT = new ExpList(e, l); :}
-  ;
+Var ::=   ID:n
+	  {: RESULT = new Absyn.SimpleVar(nleft, sym(n)); :}
+	;

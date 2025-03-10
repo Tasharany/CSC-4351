@@ -1,0 +1,163 @@
+Opening files...
+Parsing specification from standard input...
+Checking specification...
+Warning: Terminal "SHORT" was declared but never used
+Warning: Terminal "TIMES" was declared but never used
+Warning: Terminal "GT" was declared but never used
+Warning: Terminal "ARROW" was declared but never used
+Warning: Terminal "DIVASSIGN" was declared but never used
+Warning: Terminal "CONST" was declared but never used
+Warning: Terminal "GE" was declared but never used
+Warning: Terminal "PERIOD" was declared but never used
+Warning: Terminal "REGISTER" was declared but never used
+Warning: Terminal "ENUM" was declared but never used
+Warning: Terminal "RBRACK" was declared but never used
+Warning: Terminal "SIZEOF" was declared but never used
+Warning: Terminal "COMMA" was declared but never used
+Warning: Terminal "RBRACE" was declared but never used
+Warning: Terminal "RPAREN" was declared but never used
+Warning: Terminal "LBRACK" was declared but never used
+Warning: Terminal "LT" was declared but never used
+Warning: Terminal "INCREMENT" was declared but never used
+Warning: Terminal "SUBASSIGN" was declared but never used
+Warning: Terminal "DOUBLE" was declared but never used
+Warning: Terminal "BWISEANDASSIGN" was declared but never used
+Warning: Terminal "STRUCT" was declared but never used
+Warning: Terminal "LBRACE" was declared but never used
+Warning: Terminal "LPAREN" was declared but never used
+Warning: Terminal "MODASSIGN" was declared but never used
+Warning: Terminal "TILDE" was declared but never used
+Warning: Terminal "LE" was declared but never used
+Warning: Terminal "VAR" was declared but never used
+Warning: Terminal "BITWISEAND" was declared but never used
+Warning: Terminal "FLOAT" was declared but never used
+Warning: Terminal "GOTO" was declared but never used
+Warning: Terminal "EQ" was declared but never used
+Warning: Terminal "LSHIFTASSIGN" was declared but never used
+Warning: Terminal "MODULUS" was declared but never used
+Warning: Terminal "LONG" was declared but never used
+Warning: Terminal "PLUS" was declared but never used
+Warning: Terminal "DIVIDE" was declared but never used
+Warning: Terminal "WHILE" was declared but never used
+Warning: Terminal "UNION" was declared but never used
+Warning: Terminal "ASSIGN" was declared but never used
+Warning: Terminal "CHAR" was declared but never used
+Warning: Terminal "ADDASSIGN" was declared but never used
+Warning: Terminal "DO" was declared but never used
+Warning: Terminal "FOR" was declared but never used
+Warning: Terminal "VOID" was declared but never used
+Warning: Terminal "EXTERN" was declared but never used
+Warning: Terminal "RETURN" was declared but never used
+Warning: Terminal "ELSE" was declared but never used
+Warning: Terminal "BREAK" was declared but never used
+Warning: Terminal "FUN" was declared but never used
+Warning: Terminal "INT" was declared but never used
+Warning: Terminal "STRING_LITERAL" was declared but never used
+Warning: Terminal "SEMICOLON" was declared but never used
+Warning: Terminal "ELIPSES" was declared but never used
+Warning: Terminal "MULASSIGN" was declared but never used
+Warning: Terminal "DECREMENT" was declared but never used
+Warning: Terminal "MINUS" was declared but never used
+Warning: Terminal "OR" was declared but never used
+Warning: Terminal "DECIMAL_LITERAL" was declared but never used
+Warning: Terminal "CONTINUE" was declared but never used
+Warning: Terminal "IF" was declared but never used
+Warning: Terminal "BWISEOR" was declared but never used
+Warning: Terminal "COLON" was declared but never used
+Warning: Terminal "BWISEXOR" was declared but never used
+Warning: Terminal "BWISEORASSIGN" was declared but never used
+Warning: Terminal "RSHIFTASSIGN" was declared but never used
+Warning: Terminal "VOLATILE" was declared but never used
+Warning: Terminal "CHAR_LITERAL" was declared but never used
+Warning: Terminal "RSHIFT" was declared but never used
+Warning: Terminal "BWISEXORASSIGN" was declared but never used
+Warning: Terminal "NEQ" was declared but never used
+Warning: Terminal "AND" was declared but never used
+Warning: Terminal "STATIC" was declared but never used
+Warning: Terminal "LSHIFT" was declared but never used
+Warning: Terminal "TYPEDEF" was declared but never used
+Warning: Terminal "AUTO" was declared but never used
+Building parse tables...
+  Computing non-terminal nullability...
+  Computing first sets...
+  Building state machine...
+  Filling in tables...
+  Checking for non-reduced productions...
+Writing parser...
+===== Terminals =====
+SHORT TIMES GT ARROW DIVASSIGN 
+CONST GE PERIOD REGISTER ENUM 
+RBRACK SIZEOF COMMA RBRACE RPAREN 
+LBRACK LT INCREMENT SUBASSIGN DOUBLE 
+BWISEANDASSIGN STRUCT LBRACE LPAREN MODASSIGN 
+TILDE LE VAR BITWISEAND FLOAT 
+GOTO EQ LSHIFTASSIGN MODULUS LONG 
+PLUS DIVIDE WHILE UNION ASSIGN 
+CHAR ADDASSIGN DO FOR VOID 
+EXTERN RETURN ELSE BREAK FUN 
+INT STRING_LITERAL EOF SEMICOLON ELIPSES 
+MULASSIGN DECREMENT MINUS OR error 
+DECIMAL_LITERAL CONTINUE IF BWISEOR ID 
+COLON BWISEXOR BWISEORASSIGN RSHIFTASSIGN VOLATILE 
+CHAR_LITERAL RSHIFT BWISEXORASSIGN NEQ AND 
+STATIC LSHIFT TYPEDEF AUTO 
+
+===== Non terminals =====
+Exp $START Var 
+
+===== Productions =====
+Var ::= ID 
+Exp ::= Var 
+Exp ::= error 
+$START ::= Exp EOF 
+
+===== Viable Prefix Recognizer =====
+START lalr_state [0]: {
+  [Exp ::= (*) Var , {EOF }]
+  [Exp ::= (*) error , {EOF }]
+  [Var ::= (*) ID , {EOF }]
+  [$START ::= (*) Exp EOF , {EOF }]
+}
+transition on Var to state [4]
+transition on Exp to state [3]
+transition on error to state [2]
+transition on ID to state [1]
+
+-------------------
+lalr_state [1]: {
+  [Var ::= ID (*) , {EOF }]
+}
+
+-------------------
+lalr_state [2]: {
+  [Exp ::= error (*) , {EOF }]
+}
+
+-------------------
+lalr_state [3]: {
+  [$START ::= Exp (*) EOF , {EOF }]
+}
+transition on EOF to state [5]
+
+-------------------
+lalr_state [4]: {
+  [Exp ::= Var (*) , {EOF }]
+}
+
+-------------------
+lalr_state [5]: {
+  [$START ::= Exp EOF (*) , {EOF }]
+}
+
+-------------------
+Closing files...
+------- CUP v0.10g Parser Generation Summary -------
+  0 errors and 76 warnings
+  79 terminals, 3 non terminals, and 4 productions declared, 
+  producing 6 unique parse states.
+  76 terminals declared but not used.
+  0 non terminals declared but not used.
+  0 productions never reduced.
+  0 conflicts detected (3 expected).
+  Code written to "Grm.java", and "sym.java".
+---------------------------------------------------- (v0.10g)
