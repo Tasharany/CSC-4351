@@ -92,6 +92,23 @@ non terminal Absyn.Statement    statement;
 non terminal ArrayList          argument_list;
 non terminal Absyn.Expression   constant_expression;
 
+precedence nonassoc ELSE;
+precedence right ASSIGN, ADDASSIGN, SUBASSIGN, MULASSIGN, DIVASSIGN, MODASSIGN;
+precedence right BWISEANDASSIGN, BWISEORASSIGN, BWISEXORASSIGN, LSHIFTASSIGN, RSHIFTASSIGN;
+precedence left OR;
+precedence left AND;
+precedence left BWISEOR;
+precedence left BWISEXOR;
+precedence left BITWISEAND;
+precedence left EQ, NEQ;
+precedence left LT, LE, GT, GE;
+precedence left LSHIFT, RSHIFT;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE, MODULUS;
+precedence right NOT, TILDE;
+precedence right INCREMENT, DECREMENT;
+precedence left PERIOD, ARROW, LBRACK;
+
 start with Exp;
 
 Exp ::= error:e
