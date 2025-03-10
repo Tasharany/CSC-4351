@@ -27,22 +27,47 @@ parser code  {:
 
 scan with {: return lexer.nextToken(); :};
 
+/* Terminals */
 terminal String ID, STRING_LITERAL;
 terminal Integer DECIMAL_LITERAL;
-terminal char CHAR_LITERAL;
-terminal INT, COMMA, COLON, SEMICOLON, LPAREN, RPAREN, LBRACK, RBRACK,
+terminal Character CHAR_LITERAL;
 
-	LBRACE, RBRACE, PLUS, MINUS, TIMES, DIVIDE, EQ, NEQ, LT, LE,
-	GT, GE, AND, OR, ASSIGN, IF, ELSE, WHILE, FOR,
-	DO, BREAK, FUN, VAR, VOLATILE,
-    REGISTER, CONTINUE, TYPEDEF,
-    STRUCT, STATIC, SIZEOF, RETURN, EXTERN, DOUBLE,
-    UNION, SHORT, FLOAT, CONST, VOID, LONG, GOTO, ENUM,
-    CHAR, AUTO, RSHIFTASSIGN, LSHIFTASSIGN, ELIPSES, BWISEORASSIGN,
-    BWISEXORASSIGN, RSHIFT, LSHIFT, DIVASSIGN, ARROW, SUBASSIGN, DECREMENT,
-    ADDASSIGN, INCREMENT, MULASSIGN, BWISEANDASSIGN, MODASSIGN, TILDE,
-    BWISEOR, BWISEXOR, PERIOD, BITWISEAND,
-    MODULUS;
+/* Keywords */
+terminal VAR, FUN, TYPEDEF;
+terminal CONST, VOLATILE, EXTERN, STATIC, AUTO, REGISTER;
+terminal VOID, CHAR, SHORT, INT, LONG, FLOAT, DOUBLE;
+terminal STRUCT, UNION, ENUM;
+terminal IF, ELSE, WHILE, FOR, DO;
+terminal BREAK, CONTINUE, RETURN, GOTO;
+terminal SIZEOF;
+
+/* Operators */
+terminal PLUS, MINUS, TIMES, DIVIDE;
+terminal EQ, NEQ, LT, LE, GT, GE;
+terminal AND, OR, NOT;
+terminal ASSIGN;
+terminal MODULUS;
+terminal TILDE;
+terminal BWISEOR, BWISEXOR, BITWISEAND;
+
+/* Compound Assignment Operators */
+terminal ADDASSIGN, SUBASSIGN, MULASSIGN, DIVASSIGN, MODASSIGN;
+terminal BWISEANDASSIGN, BWISEORASSIGN, BWISEXORASSIGN;
+terminal LSHIFTASSIGN, RSHIFTASSIGN;
+
+/* Shift Operators */
+terminal LSHIFT, RSHIFT;
+
+/* Increment/Decrement */
+terminal INCREMENT, DECREMENT;
+
+/* Punctuation */
+terminal COMMA, COLON, SEMICOLON;
+terminal LPAREN, RPAREN;
+terminal LBRACK, RBRACK;
+terminal LBRACE, RBRACE;
+terminal PERIOD, ARROW;
+terminal ELIPSES;
 
 non terminal Absyn.Exp          Exp;
 non terminal Absyn.Var          Var;
