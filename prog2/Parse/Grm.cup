@@ -73,8 +73,6 @@ terminal LBRACE, RBRACE;
 terminal PERIOD, ARROW;
 terminal ELIPSES;
 
-/* Error terminal */
-terminal error;
 
 /* Non terminals */
 non terminal Absyn.Exp          exp;
@@ -88,7 +86,6 @@ non terminal Absyn.Name         name;
 non terminal ArrayList          parameter_list;
 non terminal ArrayList          type_parameters;
 non terminal Absyn.Parameters   parameters;
-non terminal Absyn.TypeParameters type_parameters;
 non terminal Absyn.Initialization initialization;
 non terminal Absyn.Initializer  initializer;
 non terminal ArrayList          struct_declaration_list;

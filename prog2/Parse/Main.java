@@ -1,20 +1,30 @@
 package Parse;
+
 import java.io.PrintWriter;
 
 public class Main {
+  public static void main(String args[]) {
+    if (args.length != 1) {
+      System.out.println("Usage: java Parse.Main <filename>");
+      return;
+    }
 
-  public static void main(String argv[]) throws java.io.IOException {
-    for (int i = 0; i < argv.length; ++i) {
-      String filename = argv[i];
-      if (argv.length > 1)
-	System.out.println("***Processing: " + filename);
-      Parse parse = new Parse(filename);
-      PrintWriter writer = new PrintWriter(System.out);
-      Absyn.Print printer = new Absyn.Print(writer);
-      printer.prExp(parse.absyn, 0);
-      writer.println();
-      writer.flush();
+    try {
+      String filename = args[0];
+      Parse parser = new Parse(filename);
+      Absyn.Exp exp = parser.parse();
+
+      if (exp != null) {
+        System.out.println("Parsing completed successfully");
+        Absyn.Print printer = new Absyn.Print(System.out);
+        printer.prExp(exp, 0);
+      } else {
+        System.out.println("Parsing produced null expression");
+      }
+    } catch (Exception e) {
+      System.err.println("Parsing failed:");
+      e.printStackTrace();
     }
   }
-
 }
+
