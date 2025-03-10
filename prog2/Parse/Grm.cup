@@ -38,7 +38,7 @@ terminal Character CHAR_LITERAL;
 terminal VAR, FUN, TYPEDEF, STRUCT, UNION, ENUM;
 terminal CONST, VOLATILE, EXTERN, STATIC, AUTO, REGISTER;
 terminal VOID, CHAR, SHORT, INT, LONG, FLOAT, DOUBLE;
-terminal PLUS, MINUS, TIMES, DIVIDE;
+terminal PLUS, MINUS, MUL, DIV;
 terminal EQ, NEQ, LT, LE, GT, GE;
 terminal AND, OR, NOT;
 terminal LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
@@ -74,7 +74,7 @@ precedence left AND;
 precedence nonassoc EQ, NEQ;
 precedence nonassoc LT, LE, GT, GE;
 precedence left PLUS, MINUS;
-precedence left TIMES, DIVIDE;
+precedence left MUL, DIV;
 precedence right NOT;
 
 /* Start symbol */
@@ -258,10 +258,10 @@ exp ::=
     {: RESULT = new OpExp(lleft, l, OpExp.PLUS, r); :}
   | exp:l MINUS exp:r
     {: RESULT = new OpExp(lleft, l, OpExp.MINUS, r); :}
-  | exp:l TIMES exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.TIMES, r); :}
-  | exp:l DIVIDE exp:r
-    {: RESULT = new OpExp(lleft, l, OpExp.DIVIDE, r); :}
+  | exp:l MUL exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.MUL, r); :}
+  | exp:l DIV exp:r
+    {: RESULT = new OpExp(lleft, l, OpExp.DIV, r); :}
   | exp:l EQ exp:r
     {: RESULT = new OpExp(lleft, l, OpExp.EQ, r); :}
   | exp:l NEQ exp:r
