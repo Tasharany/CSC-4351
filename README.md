@@ -26,7 +26,8 @@ chmod +x run.sh
 or 
 
 make clean
-make
+make  or make Parse/*.class
+make/Yylex.java
 java Parse.Main test.c
 
 Expected output:

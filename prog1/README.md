@@ -1,4 +1,5 @@
-Team Members: Tiffany Scroggins, Troy Williams, Jaislen Nolasco, Jack M Frost
+Team Members: Tiffany Scroggins, Troy Williams, Jaislen Nolasco, Jack Frost
+
 Group S:cs435133, 57, 66, 80
 
 Directory Tree:
@@ -25,7 +26,8 @@ chmod +x run.sh
 or 
 
 make clean
-make
+make  or make Parse/*.class
+make/Yylex.java
 java Parse.Main test.c
 
 Expected output:
