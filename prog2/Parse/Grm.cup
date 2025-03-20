@@ -126,6 +126,16 @@ bitfield_list ::=
  | bitfield_value bitfield_list
  ;
 
-initialization          ::=
-                        | ASSIGN initializer
-                        ;
+initialization ::=
+    /* empty */
+    {: RESULT = null; :}
+  | ASSIGN initializer:i
+    {: RESULT = new Initialization(ASSIGNleft, i); :}
+  ;
+
+initializer ::=
+    exp:e
+    {: RESULT = new Initializer(eleft, e); :}
+  | LBRACE initializer_list:l RBRACE
+    {: RESULT = new InitializerList(LBRACEleft, l); :}
+  ;
