@@ -1,4 +1,4 @@
-Team Members: Tiffany Scroggins, Troy Williams, Jaislen Nolasco, Jack M Frost
+Team Members: Tiffany Scroggins, Troy Williams, Jaislen Nolasco, Jack Frost
 
 Group S:cs435133, 57, 66, 80
 
