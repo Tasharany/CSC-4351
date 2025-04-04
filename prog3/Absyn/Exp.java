@@ -1,5 +1,5 @@
 package Absyn;
 import Symbol.Symbol;
-public class Exp extends Absyn {
-
+abstract public class Exp extends Absyn {
+  public Types.Type type;
 }

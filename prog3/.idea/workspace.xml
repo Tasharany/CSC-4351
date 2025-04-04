@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="df372569-1bbb-4c54-8a9b-2b18fc6ceee0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Absyn/FieldList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Absyn/FunctionDec.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Absyn/Print.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Absyn/TypeDec.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Absyn/VarDec.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../prog2/Parse/Grm.java" beforeDir="false" afterPath="$PROJECT_DIR$/../prog2/Parse/Grm.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../prog2/Parse/sym.java" beforeDir="false" afterPath="$PROJECT_DIR$/../prog2/Parse/sym.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Absyn.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Access.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/ArgumentList.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/ArrayExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/ArrayType.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/AssignmentExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/BinOp.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Bitfield.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Char.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/CommaExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/CompoundStatement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Decl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/DeclarationList.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/DoStatement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/EmptyDeclaration.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/EmptyExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/EmptyStatement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/EnumDeclaration.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Enumerator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Exp.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Exp.java" beforeDir="false" afterPath="$PROJECT_DIR$/Absyn/Exp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/ExpList.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/ExpressionStatement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/ForStatement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/FuncExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/FunctionDeclaration.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/FunctionDefinition.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Goto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Id.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/IdExp.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/IfElseStatement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Int.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/JumpStatement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/LabelStatement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/MinusMinusExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Parameter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/ParameterList.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/ParameterTypeList.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/ParenExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/PlusPlusExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Postfix.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/ReturnStatement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/SizeofExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Statement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/StatementList.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/StorageConstant.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/StringLit.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/StructDeclaration.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/StructMember.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Type.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/TypeAugments.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/TypeCode.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/Typedef.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/UnaryExpression.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/VarDeclaration.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Absyn/WhileStatement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ErrorMsg/ErrorMsg.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ErrorMsg/LineList.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Semant/Entry.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Semant/Env.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Semant/ExpTy.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Semant/FunEntry.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Semant/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Semant/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/Semant/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Semant/Print.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Semant/Semant.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Semant/Semant.java" beforeDir="false" afterPath="$PROJECT_DIR$/Semant/Semant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Semant/VarEntry.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Semant/VarEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/Semant/VarEntry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Symbol/Binder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Symbol/Symbol.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Symbol/Table.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Translate/Exp.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Types/ARRAY.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Types/INT.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Types/NAME.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Types/NIL.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Types/Print.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Types/RECORD.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Types/STRING.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Types/Type.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Types/VOID.class" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Tasharany&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Tasharany/CSC-4351.git&quot;,
+    &quot;accountId&quot;: &quot;bfafcd9d-dc25-4c57-bcad-55bcf67200aa&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2vFVNvtott99vd3wf2pqpqwhutE" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/tifft/OneDrive/Documents/GitHub/CSC-4351/prog3/Absyn",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\tifft\OneDrive\Documents\GitHub\CSC-4351\prog3\Absyn" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="prog3_skeleton_code" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="prog3_skeleton_code" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="df372569-1bbb-4c54-8a9b-2b18fc6ceee0" name="Changes" comment="" />
+      <created>1743740772168</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1743740772168</updated>
+      <workItem from="1743740773477" duration="183000" />
+      <workItem from="1743740973152" duration="16000" />
+      <workItem from="1743741082254" duration="2481000" />
+      <workItem from="1743794702300" duration="40000" />
+      <workItem from="1743794777723" duration="1310000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
