@@ -31,14 +31,62 @@ scan with {: return lexer.nextToken(); :};
 
 terminal String  ID;
 terminal Integer DECIMAL_LITERAL;
-terminal SEMICOLON, COMMA, LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
-terminal PLUS, MINUS, TIMES, DIVIDE, MODULUS;
-terminal EQ, NEQ, LT, LE, GT, GE;
-terminal AND, OR, ASSIGN, ELIPSES;
-terminal IF, ELSE, WHILE, DO, FOR, BREAK, CONTINUE, RETURN;
-terminal VAR, FUN, TYPEDEF, STRUCT, UNION, ENUM;
-terminal CONST, VOLATILE, EXTERN, STATIC, AUTO, REGISTER;
-terminal VOID, CHAR, SHORT, INT, LONG, FLOAT, DOUBLE;
+
+terminal SEMICOLON;
+terminal COMMA;
+terminal LPAREN;
+terminal RPAREN;
+terminal LBRACE;
+terminal RBRACE;
+terminal LBRACK;
+terminal RBRACK;
+
+terminal PLUS;
+terminal MINUS;
+terminal TIMES;
+terminal DIVIDE;
+terminal MODULUS;
+terminal EQ;
+terminal NEQ;
+terminal LT;
+terminal LE;
+terminal GT;
+terminal GE;
+terminal AND;
+terminal OR;
+terminal ASSIGN;
+terminal ELIPSES;
+
+terminal IF;
+terminal ELSE;
+terminal WHILE;
+terminal DO;
+terminal FOR;
+terminal BREAK;
+terminal CONTINUE;
+terminal RETURN;
+terminal VAR;
+terminal FUN;
+terminal TYPEDEF;
+terminal STRUCT;
+terminal UNION;
+terminal ENUM;
+
+terminal CONST;
+terminal VOLATILE;
+terminal EXTERN;
+terminal STATIC;
+terminal AUTO;
+terminal REGISTER;
+
+terminal VOID;
+terminal CHAR;
+terminal SHORT;
+terminal INT;
+terminal LONG;
+terminal FLOAT;
+terminal DOUBLE;
+
 
 non terminal Absyn.DecList      declaration_list;
 non terminal Absyn.Dec          declaration;
@@ -328,11 +376,18 @@ expression ::= integer_literal:i
     {: RESULT = o; :}
     | function_call:f
     {: RESULT = f; :}
+    | if_statement:i
+    {: RESULT = i; :}
+    | while_statement:w
+    {: RESULT = w; :}
+    | for_statement:f
+    {: RESULT = f; :}
     | nil_expression:n
     {: RESULT = n; :}
     ;
 
-operator_expression ::= expression:e1 PLUS:p expression:e2
+operator_expression ::=
+    expression:e1 PLUS:p expression:e2
     {: RESULT = new Absyn.OpExp(pleft, e1, Absyn.OpExp.PLUS, e2); :}
     | expression:e1 MINUS:m expression:e2
     {: RESULT = new Absyn.OpExp(mleft, e1, Absyn.OpExp.MINUS, e2); :}
@@ -342,6 +397,36 @@ operator_expression ::= expression:e1 PLUS:p expression:e2
     {: RESULT = new Absyn.OpExp(dleft, e1, Absyn.OpExp.DIVIDE, e2); :}
     | expression:e1 MODULUS:m expression:e2
     {: RESULT = new Absyn.OpExp(mleft, e1, Absyn.OpExp.MOD, e2); :}
+    | expression:e1 EQ:e expression:e2
+    {: RESULT = new Absyn.OpExp(eleft, e1, Absyn.OpExp.EQ, e2); :}
+    | expression:e1 NEQ:n expression:e2
+    {: RESULT = new Absyn.OpExp(nleft, e1, Absyn.OpExp.NE, e2); :}
+    | expression:e1 LT:l expression:e2
+    {: RESULT = new Absyn.OpExp(lleft, e1, Absyn.OpExp.LT, e2); :}
+    | expression:e1 LE:l expression:e2
+    {: RESULT = new Absyn.OpExp(lleft, e1, Absyn.OpExp.LE, e2); :}
+    | expression:e1 GT:g expression:e2
+    {: RESULT = new Absyn.OpExp(gleft, e1, Absyn.OpExp.GT, e2); :}
+    | expression:e1 GE:g expression:e2
+    {: RESULT = new Absyn.OpExp(gleft, e1, Absyn.OpExp.GE, e2); :}
+    | expression:e1 AND:a expression:e2
+    {: RESULT = new Absyn.OpExp(aleft, e1, Absyn.OpExp.AND, e2); :}
+    | expression:e1 OR:o expression:e2
+    {: RESULT = new Absyn.OpExp(oleft, e1, Absyn.OpExp.OR, e2); :}
+    ;
+
+if_statement ::= IF:i LPAREN expression:e RPAREN expression:t ELSE expression:f
+    {: RESULT = new Absyn.IfExp(ileft, e, t, f); :}
+    | IF:i LPAREN expression:e RPAREN expression:t
+    {: RESULT = new Absyn.IfExp(ileft, e, t, null); :}
+    ;
+
+while_statement ::= WHILE:w LPAREN expression:e RPAREN expression:b
+    {: RESULT = new Absyn.WhileExp(wleft, e, b); :}
+    ;
+
+for_statement ::= FOR:f LPAREN expression:i SEMICOLON expression:c SEMICOLON expression:u RPAREN expression:b
+    {: RESULT = new Absyn.ForExp(fleft, i, c, u, b); :}
     ;
 
 variable ::= simple_variable:v
@@ -360,9 +445,10 @@ integer_literal ::= DECIMAL_LITERAL:n
     {: RESULT = new Absyn.IntExp(nleft, n); :}
     ;
 
-nil_expression ::=
+nil_expression ::= VOID
     {: RESULT = new Absyn.NilExp(0); :}
     ;
+
 
 function_call ::= ID:i LPAREN expression_list:el RPAREN
     {: RESULT = new Absyn.CallExp(ileft, sym(i), el); :}
