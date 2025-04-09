@@ -41,9 +41,20 @@ public class Print {
   void prEntry(FunEntry entry, int d) {
     say(":"); types.prType(entry.formals, d+1); sayln("");
     indent(d+1); say("->"); types.prType(entry.result, d+3);
+    if (entry.level != null) {
+      sayln(""); indent(d); say("@" + entry.level.name().toString());
+      for (Translate.AccessList f = entry.level.frameFormals;
+	   f != null;
+	   f = f.tail) {
+	sayln(""); indent(d+1); say(f.head.toString());
+      }
+    }
   }
 
   void prEntry(VarEntry entry, int d) {
     say(":"); types.prType(entry.ty, d+1);
+    if (entry.access != null) {
+      sayln(""); indent(d); say("@" + entry.access.toString());
+    }
   }
 }

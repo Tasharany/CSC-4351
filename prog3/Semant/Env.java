@@ -10,6 +10,7 @@ class Env {
   Table tenv;			// type environment
   ErrorMsg.ErrorMsg errorMsg;
 
+
   private static Symbol sym(String s) {
     return Symbol.symbol(s);
   }
@@ -26,8 +27,8 @@ class Env {
     return new FunEntry(f, r);
   }
 
-  Env(ErrorMsg.ErrorMsg err) {
-    errorMsg = err;
+  Env() {
+    this.errorMsg = errorMsg;
     venv = new Table();
     tenv = new Table();
 

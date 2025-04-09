@@ -3,16 +3,11 @@ import java.util.ArrayList;
 import Symbol.Symbol;
 
 public class ExpList extends Exp{
-    public ArrayList<Exp> exps;
+    public Exp head;
+    public ExpList tail;
 
-    public ExpList(int p) {
-        pos=p;
-        this.exps = new ArrayList<Exp>();
+    public ExpList(Exp h, ExpList t) {
+        head = h;
+        tail = t;
     }
-
-    public void add(Exp e) {
-        this.exps.add(e);
-    }
-
-
 }

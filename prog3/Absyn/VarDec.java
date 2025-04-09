@@ -1,16 +1,11 @@
 package Absyn;
-
+import Symbol.Symbol;
 public class VarDec extends Dec {
    public Symbol name;
-   public Symbol typ;  // null means to be inferred
+   public boolean escape = true;
+   public NameTy typ; /* optional */
    public Exp init;
-   public boolean escape;  // For escape analysis
-
-   public VarDec(int p, Symbol n, Symbol t, Exp i) {
-      pos = p;
-      name = n;
-      typ = t;
-      init = i;
-      escape = false;  // Initialize to false (was true)
-   }
+   public VarDec(int p, Symbol n, NameTy t, Exp i) {pos=p; name=n; typ=t; init=i;}
+   public Semant.VarEntry entry;
+   public int pos;
 }
