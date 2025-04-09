@@ -1,6 +1,6 @@
 package Absyn;
 import Symbol.Symbol;
-
+import Semant.Entry;
 public class VarDec extends Dec {
    public Symbol name;
    public NameTy typ;  // Optional type

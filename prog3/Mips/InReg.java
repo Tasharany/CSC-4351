@@ -1,13 +1,11 @@
 package Mips;
+import Frame.Access;
 import Temp.Temp;
 
-class InReg extends Frame.Access {
+public class InReg extends Access {
   Temp temp;
-  InReg(Temp t) {
-    temp = t;
-  }
 
-  public String toString() {
-    return temp.toString();
+  public InReg(Temp t) {
+    temp = t;
   }
 }

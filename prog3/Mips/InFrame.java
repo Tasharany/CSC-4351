@@ -1,14 +1,10 @@
 package Mips;
+import Frame.Access;
 
-class InFrame extends Frame.Access {
+public class InFrame extends Access {
   int offset;
 
-  InFrame(int o) {
+  public InFrame(int o) {
     offset = o;
-  }
-
-  public String toString() {
-    Integer offset = Integer.valueOf(this.offset);
-    return offset.toString();
   }
 }

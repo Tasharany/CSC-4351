@@ -1,6 +1,6 @@
 package Absyn;
 import Symbol.Symbol;
-
+import Semant.Entry;
 public class FunctionDec extends Dec {
   public Symbol name;
   public FieldList params;

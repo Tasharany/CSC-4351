@@ -1,12 +1,8 @@
 package Semant;
-
-import Translate.Exp;
-import Types.Type;
-
 class ExpTy {
-  Exp exp;
-  Type ty;
-  ExpTy(Exp e, Type t) {
+  Translate.Exp exp;
+  Types.Type ty;
+  ExpTy(Translate.Exp e, Types.Type t) {
     exp = e;
     ty = t;
   }

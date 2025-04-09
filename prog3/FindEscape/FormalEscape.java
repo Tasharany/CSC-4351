@@ -1,14 +1,11 @@
 package FindEscape;
+import Absyn.FieldList;
 
-class FormalEscape extends Escape {
-  Absyn.FieldList fl;
-  FormalEscape(int d, Absyn.FieldList f) {
-    depth = d;
-    fl = f;
-    fl.escape = false;
-  }
+public class FormalEscape extends Escape {
+  public FieldList field;
 
-  void setEscape() {
-    fl.escape = true;
+  public FormalEscape(int d, FieldList f) {
+    super(d);
+    field = f;
   }
 }
