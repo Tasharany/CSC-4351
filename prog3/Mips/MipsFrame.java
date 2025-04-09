@@ -1,54 +1,37 @@
 package Mips;
-import java.util.Hashtable;
-import Symbol.Symbol;
-import Temp.Temp;
-import Temp.Label;
-import Frame.Frame;
-import Frame.Access;
-import Frame.AccessList;
 
-public class MipsFrame extends Frame {
+public class MipsFrame extends Frame.Frame {
+    private int offset = 0;
 
-  private int count = 0;
-  private int offset;
-  public Frame newFrame(Symbol name, Util.BoolList formals) {
-    Label label;
-    if (name == null)
-      label = new Label();
-    else if (this.name != null)
-      label = new Label(this.name + "." + name + "." + count++);
-    else
-      label = new Label(name);
-    return new MipsFrame(label, formals);
-  }
+    public Access allocLocal(boolean escape) {
+        if (escape) {
+            offset -= wordSize();
+            return new InFrame(offset);
+        } else {
+            return new InReg(new Temp());
+        }
+    }
 
-  public MipsFrame() {}
-  private MipsFrame(Label n, Util.BoolList f) {
-    name = n;
-    formals = allocFormals(0, f);
-  }
+    public Frame.Access allocFormal(boolean escape) {
+        if (escape) {
+            offset += wordSize();
+            return new InFrame(offset);
+        } else {
+            return new InReg(new Temp());
+        }
+    }
 
-  private static final int wordSize = 4;
-  public int wordSize() { return wordSize; }
-  
-  private AccessList allocFormals(int offset, Util.BoolList formals){
-	  if (formals == null)
-		  return null;
-	  Access a;
-	  if (formals.head)
-		  a = new InFrame(offset);
-	  else 
-		  a = new InReg(new Temp());
-	  return new AccessList(a, allocFormals(offset + wordSize, formals.tail));
-  }
+    public int wordSize() {
+        return 4;
+    }
+}
 
-  public Access allocLocal(boolean escape) {
-  	if (escape){
-  		offset -= wordSize;
-  		return new InFrame(offset);
-  		}
-  	else
-  		return new InReg(new Temp());
-  }
-  
+class InFrame extends Frame.Access {
+    int offset;
+    InFrame(int o) { offset = o; }
+}
+
+class InReg extends Frame.Access {
+    Temp.Temp temp;
+    InReg(Temp.Temp t) { temp = t; }
 }

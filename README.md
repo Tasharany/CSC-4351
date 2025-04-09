@@ -1,5 +1,13 @@
 
 Directory Tree:
+prog3/
+├── Absyn/
+├── ErrorMsg/
+├── FindEscape/
+├── Parse/
+├── Semant/
+│   └── Main.java
+└── test.tig
 
 
 If on linux, WSL or classes server:
