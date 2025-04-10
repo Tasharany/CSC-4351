@@ -1,7 +1,6 @@
 package Symbol;
 public class Symbol {
   private String name;
-  private Types.Type type;
   private Symbol(String n) {
     name=n;
   }

@@ -1,2 +1,3 @@
 package Semant;
-public abstract class Entry { }
+
+abstract class Entry {}

@@ -1,12 +1,14 @@
 package FindEscape;
-import Absyn.VarDec;
 
-public class VarEscape extends Escape {
-  public VarDec dec;
+class VarEscape extends Escape {
+  Absyn.VarDec vd;
+  VarEscape(int d, Absyn.VarDec v) {
+    depth = d;
+    vd = v;
+    vd.escape = false;
+  }
 
-  public VarEscape(int d, VarDec v) {
-    super(d);
-    dec = v;
+  void setEscape() {
+    vd.escape = true;
   }
 }
-

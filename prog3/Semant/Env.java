@@ -1,28 +1,59 @@
 package Semant;
-import Symbol.*;
-import Types.*;
-import ErrorMsg.ErrorMsg;
+import Symbol.Table;
+import Symbol.Symbol;
+import Types.Type;
+import Types.RECORD;
+import Types.NAME;
 
-public class Env {
-  public Table venv;
-  public Table tenv;
-  public ErrorMsg errorMsg;
+class Env {
+  Table venv;			// value environment
+  Table tenv;			// type environment
+  ErrorMsg.ErrorMsg errorMsg;
 
-  public Env(ErrorMsg err) {
+  private static Symbol sym(String s) {
+    return Symbol.symbol(s);
+  }
+
+  private static final Types.VOID VOID = Semant.VOID;
+  private static RECORD RECORD(Symbol n, Type t, RECORD x) {
+    return new RECORD(n, t, x);
+  }
+  private static RECORD RECORD(Symbol n, Type t) {
+    return new RECORD(n, t, null);
+  }
+
+  private static FunEntry FunEntry(RECORD f, Type r) {
+    return new FunEntry(f, r);
+  }
+
+  Env(ErrorMsg.ErrorMsg err) {
+    errorMsg = err;
     venv = new Table();
     tenv = new Table();
-    errorMsg = err;
 
-    // Initialize basic types
-    tenv.put(Symbol.symbol("int"), new INT());
-    tenv.put(Symbol.symbol("void"), new VOID());
-    tenv.put(Symbol.symbol("char"), new CHAR());
+    // initialize tenv and venv with predefined identifiers
+    NAME INT = new NAME(sym("int"));
+    INT.bind(Semant.INT);
+    tenv.put(sym("int"), INT);
 
-    // Initialize standard functions
-    Level level = null;
-    RECORD params = new RECORD(Symbol.symbol("s"), new INT(), null);
-    venv.put(Symbol.symbol("print"),
-            new FunEntry(level, new Frame.Label("print"),
-                    params, new VOID()));
+    NAME STRING = new NAME(sym("string"));
+    STRING.bind(Semant.STRING);
+    tenv.put(sym("string"), STRING);
+
+    venv.put(sym("print"),     FunEntry(RECORD(sym("s"), STRING), VOID));
+    venv.put(sym("flush"),     FunEntry(null, VOID));
+    venv.put(sym("getchar"),   FunEntry(null, STRING));
+    venv.put(sym("ord"),       FunEntry(RECORD(sym("s"), STRING), INT));
+    venv.put(sym("chr"),       FunEntry(RECORD(sym("i"), INT), STRING));
+    venv.put(sym("size"),      FunEntry(RECORD(sym("s"), STRING), INT));
+    venv.put(sym("substring"), FunEntry(RECORD(sym("s"), STRING,
+					       RECORD(sym("first"), INT,
+						      RECORD(sym("n"), INT))),
+					STRING));
+    venv.put(sym("concat"),    FunEntry(RECORD(sym("s1"), STRING,
+					       RECORD(sym("s2"), STRING)),
+					STRING));
+    venv.put(sym("not"),       FunEntry(RECORD(sym("i"), INT), INT));
+    venv.put(sym("exit"),      FunEntry(RECORD(sym("i"), INT), VOID));
   }
 }

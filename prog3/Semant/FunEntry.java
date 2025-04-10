@@ -1,21 +1,15 @@
 package Semant;
-import Types.Type;
-import Frame.Label;
-import Translate.Level;
 
 public class FunEntry extends Entry {
-  public Level level;
-  public Label label;
+  Translate.Level level;
   public Types.RECORD formals;
-  public Type result;
-
-  public FunEntry(Level l, Label lab, Types.RECORD f, Type r) {
-    level = l;
-    label = lab;
+  public Types.Type result;
+  FunEntry(Types.RECORD f, Types.Type r) {
+    this(null, f, r);
+  }
+  FunEntry(Translate.Level v, Types.RECORD f, Types.Type r) {
+    level = v;
     formals = f;
     result = r;
   }
 }
-
-
-

@@ -1,48 +1,54 @@
 package Mips;
-import Frame.*;
+import java.util.Hashtable;
 import Symbol.Symbol;
 import Temp.Temp;
+import Temp.Label;
+import Frame.Frame;
+import Frame.Access;
+import Frame.AccessList;
 
 public class MipsFrame extends Frame {
-    private int offset = 0;
-    private static final int wordSize = 4;
 
-    public Access allocLocal(boolean escape) {
-        if (escape) {
-            offset -= wordSize;
-            return new InFrame(offset);
-        }
-        return new InReg(new Temp());
-    }
+  private int count = 0;
+  private int offset;
+  public Frame newFrame(Symbol name, Util.BoolList formals) {
+    Label label;
+    if (name == null)
+      label = new Label();
+    else if (this.name != null)
+      label = new Label(this.name + "." + name + "." + count++);
+    else
+      label = new Label(name);
+    return new MipsFrame(label, formals);
+  }
 
-    public Frame newFrame(Symbol name, BoolList formals) {
-        MipsFrame frame = new MipsFrame();
-        frame.name = new Label(name.toString());
-        int offset = 0;
+  public MipsFrame() {}
+  private MipsFrame(Label n, Util.BoolList f) {
+    name = n;
+    formals = allocFormals(0, f);
+  }
 
-        AccessList head = null, tail = null;
-        for (BoolList b = formals; b != null; b = b.tail) {
-            Access access;
-            if (b.head) {
-                offset += wordSize;
-                access = new InFrame(offset);
-            } else {
-                access = new InReg(new Temp());
-            }
+  private static final int wordSize = 4;
+  public int wordSize() { return wordSize; }
+  
+  private AccessList allocFormals(int offset, Util.BoolList formals){
+	  if (formals == null)
+		  return null;
+	  Access a;
+	  if (formals.head)
+		  a = new InFrame(offset);
+	  else 
+		  a = new InReg(new Temp());
+	  return new AccessList(a, allocFormals(offset + wordSize, formals.tail));
+  }
 
-            if (head == null)
-                head = tail = new AccessList(access, null);
-            else {
-                tail.tail = new AccessList(access, null);
-                tail = tail.tail;
-            }
-        }
-        frame.formals = head;
-        return frame;
-    }
-
-    public int wordSize() {
-        return wordSize;
-    }
+  public Access allocLocal(boolean escape) {
+  	if (escape){
+  		offset -= wordSize;
+  		return new InFrame(offset);
+  		}
+  	else
+  		return new InReg(new Temp());
+  }
+  
 }
-

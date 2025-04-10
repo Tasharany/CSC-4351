@@ -2,10 +2,12 @@ package Translate;
 
 public class Access {
   Level home;
-  Frame.Access access;
-
-  public Access(Level h, Frame.Access a) {
+  Frame.Access acc;
+  Access(Level h, Frame.Access a) {
     home = h;
-    access = a;
+    acc = a;
+  }
+  public String toString() {
+    return "[" + home.frame.name.toString() + "," + acc.toString() + "]";
   }
 }

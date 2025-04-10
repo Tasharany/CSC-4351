@@ -1,20 +1,40 @@
 package ErrorMsg;
 
 public class ErrorMsg {
-    private String filename;
-    public boolean anyErrors;
+  private LineList linePos = new LineList(-1,null);
+  private int lineNum=1;
+  private String filename;
+  public boolean anyErrors;
 
-    public ErrorMsg(String f) {
-        filename = f;
-        anyErrors = false;
-    }
+  public ErrorMsg(String f) {
+      filename=f;
+  }
 
-    public void error(int pos, String msg) {
-        anyErrors = true;
-        System.err.println(filename + ":" + pos + ": " + msg);
-    }
+  public void newline(int pos) {
+     lineNum++;
+     linePos = new LineList(pos,linePos);
+  }
+  public void error(int pos, String msg) {
+	int n = lineNum;
+        LineList p = linePos;
+	String sayPos="0.0";
 
-    public void newline(int pos) {
-        // track line numbers if needed
-    }
+	anyErrors=true;
+
+        while (p!=null) {
+          if (p.head<pos) {
+	     sayPos = ":" + String.valueOf(n) + "." + String.valueOf(pos-p.head);
+	     break;
+          }
+	  p=p.tail; n--;
+        }
+
+	System.err.println(filename + ":" + sayPos + ": " + msg);
+  }
+}
+
+class LineList {
+  int head;
+  LineList tail;
+  LineList(int h, LineList t) {head=h; tail=t;}
 }
