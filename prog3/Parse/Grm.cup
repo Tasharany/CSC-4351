@@ -160,14 +160,17 @@ decList ::=
 	;
 
 dec ::=
-	error
-	|functionDec:f
-	{: RESULT = f; :}
-	|VAR:va ID:n nameType:ntype ASSIGN Exp:e
-	{: RESULT = new Absyn.VarDec(valeft,sym(n),ntype,e); :}
-	| typeDec:t
-	{: RESULT = t; :}
-	;
+error
+|functionDec:f
+{: RESULT = f; :}
+|VAR:va ID:n nameType:ntype ASSIGN Exp:e
+{: RESULT = new Absyn.VarDec(valeft,sym(n),ntype,e); :}
+|VAR:va ID:n ASSIGN Exp:e
+{: RESULT = new Absyn.VarDec(valeft,sym(n),null,e); :}
+| typeDec:t
+{: RESULT = t; :}
+;
+
 
 typeDec ::=
 	TYPE:ty1 ID:n EQ:eq type:ty2 optTypes:ty3

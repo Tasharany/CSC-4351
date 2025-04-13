@@ -7,7 +7,7 @@ class InFrame extends Frame.Access {
   }
 
   public String toString() {
-    Integer offset = new Integer(this.offset);
+    Integer offset = this.offset;
     return offset.toString();
   }
 }

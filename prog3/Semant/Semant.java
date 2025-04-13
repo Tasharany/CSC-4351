@@ -1,4 +1,5 @@
 package Semant;
+import Absyn.FieldList;
 import Translate.Exp;
 import Types.Type;
 import java.util.Hashtable;
@@ -6,6 +7,7 @@ import Translate.Level;
 import Translate.Access;
 import Translate.AccessList;
 import Absyn.ExpList;
+import Util.BoolList;
 
 public class Semant {
   Env env;
@@ -16,6 +18,30 @@ public class Semant {
   Semant(Env e, Level l) {
     env = e;
     level = l;
+  }
+  private BoolList escapes(FieldList params) {
+    // Start with an empty list
+    BoolList result = null;
+
+    // Count parameters and build the list in reverse order
+    FieldList p = params;
+    while (p != null) {
+      // Add each parameter's escape value to the front of the list
+      result = new BoolList(p.escape, result);
+      p = p.tail;
+    }
+
+    // The list is now in reverse order, so we need to reverse it
+    BoolList reversed = null;
+    BoolList current = result;
+    while (current != null) {
+      BoolList next = current.tail;
+      current.tail = reversed;
+      reversed = current;
+      current = next;
+    }
+
+    return reversed;
   }
 
   public void transProg(Absyn.Exp exp) {
