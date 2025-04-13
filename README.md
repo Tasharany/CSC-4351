@@ -4,7 +4,7 @@ If on linux, WSL or classes server:
 
 cd prog3
 
-chmod +x run.sh
+chmod +x test.sh
 
 ./test.sh
 
